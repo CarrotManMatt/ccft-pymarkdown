@@ -10,7 +10,6 @@ if TYPE_CHECKING:
     from pathlib import Path
 
 
-
 def restore_custom_formatted_tables_from_all_files() -> None:
     """Return all Markdown files to their original state before linting."""
     file_path: Path

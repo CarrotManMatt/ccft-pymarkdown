@@ -2,7 +2,6 @@ from collections.abc import Sequence
 
 __all__: Sequence[str] = ("run",)
 
-import re
 import subprocess
 import sys
 from argparse import ArgumentParser, Namespace
@@ -14,6 +13,7 @@ from rcft_pymarkdown import (
     restore_custom_formatted_tables,
     utils,
 )
+from rcft_pymarkdown.context_manager import RemoveCustomFormattedTables
 
 if TYPE_CHECKING:
     # noinspection PyProtectedMember
@@ -67,18 +67,18 @@ def run(argv: Sequence[str] | None = None) -> int:
         try:
             remove_custom_formatted_tables.remove_custom_formatted_tables_from_all_files()
         except FileExistsError as remove_tables_file_exists_error:
-            ERROR_IS_ORIGINAL_FILE_ALREADY_EXISTS: Final[bool] = (
+            MANUAL_REMOVE_ERROR_IS_ORIGINAL_FILE_ALREADY_EXISTS: Final[bool] = (
                 bool(remove_tables_file_exists_error.args)
                 and "already exists" in remove_tables_file_exists_error.args[0]
             )
-            if ERROR_IS_ORIGINAL_FILE_ALREADY_EXISTS:
-                REMOVE_TABLES_FILE_EXISTS_ERROR_MESSAGE: Final[str] = (
+            if MANUAL_REMOVE_ERROR_IS_ORIGINAL_FILE_ALREADY_EXISTS:
+                MANUAL_REMOVE_REMOVE_TABLES_FILE_EXISTS_ERROR_MESSAGE: Final[str] = (
                     f"{remove_tables_file_exists_error.args[0]} "
                     f"Use `{arg_parser.prog} --restore` to first restore the files "
                     "to their original state."
                 )
                 raise type(remove_tables_file_exists_error)(
-                    REMOVE_TABLES_FILE_EXISTS_ERROR_MESSAGE  # noqa: COM812
+                    MANUAL_REMOVE_REMOVE_TABLES_FILE_EXISTS_ERROR_MESSAGE  # noqa: COM812
                 ) from remove_tables_file_exists_error
 
             raise remove_tables_file_exists_error from remove_tables_file_exists_error
@@ -97,23 +97,43 @@ def run(argv: Sequence[str] | None = None) -> int:
         restore_custom_formatted_tables.restore_custom_formatted_tables_from_all_files()
         return 0
 
-    raise NotImplementedError
+    try:
+        with RemoveCustomFormattedTables():
+            parser_output: CompletedProcess[bytes] = subprocess.run(
+                [sys.executable, "-m", "pymarkdown", *remaining_args],
+                cwd=utils.PROJECT_ROOT,
+                capture_output=True,
+                check=False,
+            )
 
-    parser_output: CompletedProcess[bytes] = subprocess.run(
-        [sys.executable, "-m", "pymarkdown", *remaining_args],
-        cwd=utils.PROJECT_ROOT,
-        capture_output=True,
-        check=False,
-    )
+    except FileExistsError as remove_tables_file_exists_error:
+        WITH_PYMARKDOWN_ERROR_IS_ORIGINAL_FILE_ALREADY_EXISTS: Final[bool] = (
+            bool(remove_tables_file_exists_error.args)
+            and "already exists" in remove_tables_file_exists_error.args[0]
+        )
+        if WITH_PYMARKDOWN_ERROR_IS_ORIGINAL_FILE_ALREADY_EXISTS:
+            WITH_PYMARKDOWN_REMOVE_TABLES_FILE_EXISTS_ERROR_MESSAGE: Final[str] = (
+                f"{remove_tables_file_exists_error.args[0]} "
+                f"Use `{arg_parser.prog} --restore` to first restore the files "
+                "to their original state."
+            )
+            raise type(remove_tables_file_exists_error)(
+                WITH_PYMARKDOWN_REMOVE_TABLES_FILE_EXISTS_ERROR_MESSAGE  # noqa: COM812
+            ) from remove_tables_file_exists_error
+
+        raise remove_tables_file_exists_error from remove_tables_file_exists_error
 
     sys.stdout.write(
-        re.sub(
-            r"\Ausage: [A-Za-z_.]+(?= \[)",
-            f"{arg_parser.format_usage().strip().strip(".").strip()}\n{" " * 17}",
-            parser_output.stdout.decode("utf-8"),
-            count=1,
+        parser_output.stdout.decode("utf-8").replace(
+            "__main__.py",
+            arg_parser.prog,
         )  # noqa: COM812
     )
-    sys.stderr.buffer.write(parser_output.stderr)
+    sys.stderr.write(
+        parser_output.stderr.decode("utf-8").replace(
+            "__main__.py",
+            arg_parser.prog,
+        )  # noqa: COM812
+    )
 
     return parser_output.returncode
