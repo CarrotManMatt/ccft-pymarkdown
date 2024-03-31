@@ -2,13 +2,18 @@ from collections.abc import Sequence
 
 __all__: Sequence[str] = ("run",)
 
-from argparse import ArgumentParser, Namespace
+import re
 import subprocess
-from subprocess import CompletedProcess
 import sys
-from typing import Final, TYPE_CHECKING
+from argparse import ArgumentParser, Namespace
+from subprocess import CompletedProcess
+from typing import TYPE_CHECKING, Final
 
-from rcft_pymarkdown import utils, remove_custom_formatted_tables, restore_custom_formatted_tables
+from rcft_pymarkdown import (
+    remove_custom_formatted_tables,
+    restore_custom_formatted_tables,
+    utils,
+)
 
 if TYPE_CHECKING:
     # noinspection PyProtectedMember
@@ -25,17 +30,17 @@ def _set_up_arg_parser() -> ArgumentParser:
 
     remove_restore_args_group: "MutuallyExclusiveGroup" = arg_parser.add_argument_group(
         "Remove/Restore",
-        "Manually remove or restore custom formatted tables from all Markdown files."
+        "Manually remove or restore custom formatted tables from all Markdown files.",
     ).add_mutually_exclusive_group()
     remove_restore_args_group.add_argument(
         "--remove",
         action="store_true",
-        help="Manually remove custom formatted tables from all Markdown files."
+        help="Manually remove custom formatted tables from all Markdown files.",
     )
     remove_restore_args_group.add_argument(
         "--restore",
         action="store_true",
-        help="Manually remove custom formatted tables from all Markdown files."
+        help="Manually remove custom formatted tables from all Markdown files.",
     )
 
     return arg_parser
@@ -73,7 +78,7 @@ def run(argv: Sequence[str] | None = None) -> int:
                     "to their original state."
                 )
                 raise type(remove_tables_file_exists_error)(
-                    REMOVE_TABLES_FILE_EXISTS_ERROR_MESSAGE
+                    REMOVE_TABLES_FILE_EXISTS_ERROR_MESSAGE  # noqa: COM812
                 ) from remove_tables_file_exists_error
 
             raise remove_tables_file_exists_error from remove_tables_file_exists_error
@@ -95,18 +100,19 @@ def run(argv: Sequence[str] | None = None) -> int:
     raise NotImplementedError
 
     parser_output: CompletedProcess[bytes] = subprocess.run(
-        ["pymarkdown", *remaining_args],  # noqa: S603
+        [sys.executable, "-m", "pymarkdown", *remaining_args],
         cwd=utils.PROJECT_ROOT,
         capture_output=True,
-        check=False
+        check=False,
     )
 
     sys.stdout.write(
-        parser_output.stdout.decode("utf-8").replace(
-            "usage: pymarkdown",
+        re.sub(
+            r"\Ausage: [A-Za-z_.]+(?= \[)",
             f"{arg_parser.format_usage().strip().strip(".").strip()}\n{" " * 17}",
-            1
-        )
+            parser_output.stdout.decode("utf-8"),
+            count=1,
+        )  # noqa: COM812
     )
     sys.stderr.buffer.write(parser_output.stderr)
 

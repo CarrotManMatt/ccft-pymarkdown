@@ -5,11 +5,11 @@ __all__: Sequence[str] = (
     "remove_custom_formatted_tables_from_file",
 )
 
-from pathlib import Path
-from collections.abc import MutableSequence
-from typing import Final, TextIO
 import re
 import shutil
+from collections.abc import MutableSequence
+from pathlib import Path
+from typing import Final, TextIO
 
 from git import PathLike, Repo
 
@@ -42,7 +42,7 @@ def remove_custom_formatted_tables_from_file(original_file_path: Path) -> None:
 
     temp_file_path: Path = shutil.copy2(
         original_file_path,
-        original_file_path.parent / f"{original_file_path.name}.original"
+        original_file_path.parent / f"{original_file_path.name}.original",
     )
     new_file_path = original_file_path
     original_file_path = temp_file_path

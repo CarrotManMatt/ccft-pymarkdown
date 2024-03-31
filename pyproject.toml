@@ -130,6 +130,8 @@ fixable = ["I001", "TCH", "F401", "RUF100"]
 ignore = [
     "D203",
     "D212",
+    "N806",
+    "S603",
     "UP040",  # NOTE: Mypy does not currently support PEP 695 type aliases, so they should not be used
 ]
 task-tags = [
