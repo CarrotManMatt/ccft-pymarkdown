@@ -1,6 +1,6 @@
 from collections.abc import Sequence
 
-__all__: Sequence[str] = ("get_project_root",)
+__all__: Sequence[str] = ("PROJECT_ROOT",)
 
 from pathlib import Path
 from typing import Final
@@ -8,7 +8,7 @@ from typing import Final
 from git import InvalidGitRepositoryError, PathLike, Repo
 
 
-def get_project_root() -> Path:
+def _get_project_root() -> Path:
     try:
         raw_project_root: PathLike | str | None = Repo(
             Path.cwd(),
@@ -36,3 +36,6 @@ def _get_readme_root() -> Path:
         # noinspection PyFinal
         NO_ROOT_DIRECTORY_MESSAGE: Final[str] = "Could not locate project root directory."
         raise FileNotFoundError(NO_ROOT_DIRECTORY_MESSAGE)
+
+
+PROJECT_ROOT: Final[Path] = _get_project_root()

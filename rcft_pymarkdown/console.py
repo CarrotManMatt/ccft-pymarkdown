@@ -6,9 +6,9 @@ from argparse import ArgumentParser, Namespace
 import subprocess
 from subprocess import CompletedProcess
 import sys
-from typing import TYPE_CHECKING
+from typing import Final, TYPE_CHECKING
 
-from rcft_pymarkdown import utils
+from rcft_pymarkdown import utils, remove_custom_formatted_tables, restore_custom_formatted_tables
 
 if TYPE_CHECKING:
     # noinspection PyProtectedMember
@@ -58,7 +58,27 @@ def run(argv: Sequence[str] | None = None) -> int:
             arg_parser.error(f"unrecognized arguments: {" ".join(remaining_args)}")
             raise SystemExit(2)
 
-        raise NotImplementedError
+        remove_tables_file_exists_error: FileExistsError
+        try:
+            remove_custom_formatted_tables.remove_custom_formatted_tables_from_all_files()
+        except FileExistsError as remove_tables_file_exists_error:
+            ERROR_IS_ORIGINAL_FILE_ALREADY_EXISTS: Final[bool] = (
+                bool(remove_tables_file_exists_error.args)
+                and "already exists" in remove_tables_file_exists_error.args[0]
+            )
+            if ERROR_IS_ORIGINAL_FILE_ALREADY_EXISTS:
+                REMOVE_TABLES_FILE_EXISTS_ERROR_MESSAGE: Final[str] = (
+                    f"{remove_tables_file_exists_error.args[0]} "
+                    f"Use `{arg_parser.prog} --restore` to first restore the files "
+                    "to their original state."
+                )
+                raise type(remove_tables_file_exists_error)(
+                    REMOVE_TABLES_FILE_EXISTS_ERROR_MESSAGE
+                ) from remove_tables_file_exists_error
+
+            raise remove_tables_file_exists_error from remove_tables_file_exists_error
+
+        return 0
 
     if parsed_args.restore:
         if "-h" in remaining_args or "--help" in remaining_args:
@@ -69,11 +89,14 @@ def run(argv: Sequence[str] | None = None) -> int:
             arg_parser.error(f"Unrecognized arguments: {" ".join(remaining_args)}")
             raise SystemExit(2)
 
-        raise NotImplementedError
+        restore_custom_formatted_tables.restore_custom_formatted_tables_from_all_files()
+        return 0
+
+    raise NotImplementedError
 
     parser_output: CompletedProcess[bytes] = subprocess.run(
         ["pymarkdown", *remaining_args],  # noqa: S603
-        cwd=utils.get_project_root(),
+        cwd=utils.PROJECT_ROOT,
         capture_output=True,
         check=False
     )
