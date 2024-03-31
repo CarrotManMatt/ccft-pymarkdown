@@ -19,6 +19,6 @@ def run(argv: Sequence[str] | None = None) -> int:
     """Run the Minecraft Mod Downloader tool as a CLI tool with argument parsing."""
     arg_parser: ArgumentParser = set_up_arg_parser()
 
-    parsed_args: Namespace = arg_parser.parse_args(argv)
+    arg_parser.parse_args(argv)
 
     raise NotImplementedError
