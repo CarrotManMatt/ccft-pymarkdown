@@ -8,7 +8,7 @@ from collections.abc import Sequence
 
 __all__: Sequence[str] = ("run",)
 
-from argparse import ArgumentParser, Namespace
+from argparse import ArgumentParser
 
 
 def set_up_arg_parser() -> ArgumentParser:
