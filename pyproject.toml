@@ -38,7 +38,7 @@ classproperties = {git = "https://github.com/hottwaj/classproperties.git"}
 pytest = "^8.1"
 ruff = "^0.3"
 pre-commit = "^3.6"
-mypy = "~1.7"
+mypy = "^1.9"
 
 [tool.pytest.ini_options]
 filterwarnings = ["ignore:'audioop':DeprecationWarning"]
