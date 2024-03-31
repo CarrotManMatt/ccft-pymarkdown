@@ -28,6 +28,21 @@ files = [
 ]
 
 [[package]]
+name = "classproperties"
+version = "0.2"
+description = "Decorators for classproperty and cached_classproperty"
+optional = false
+python-versions = ">=3.5"
+files = []
+develop = false
+
+[package.source]
+type = "git"
+url = "https://github.com/hottwaj/classproperties.git"
+reference = "HEAD"
+resolved_reference = "cc20df2fbdf7dd7c4cd595b99418a21618bd7812"
+
+[[package]]
 name = "colorama"
 version = "0.4.6"
 description = "Cross-platform colored terminal text."
@@ -440,4 +455,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "2dfcdb7160b841c1c28d42d44fba169b3f16ccc313178006fd33d0c94b013c59"
+content-hash = "4df99f57f12acfe23ecd0dd5d93cc61d4f556b30eb4e11c9e411368764fea52c"

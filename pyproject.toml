@@ -19,10 +19,20 @@ classifiers = [
     "Topic :: Text Processing :: Markup :: Markdown",
     "Typing :: Typed",
 ]
+packages = [{include = "rcft_pymarkdown"}]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+rcft-pymarkdown = "rcft_pymarkdown.console:run"
 
 [tool.poetry.dependencies]
 python = "^3.12"
 pymarkdownlnt = "^0.9"
+setuptools = "^69.2"
+classproperties = {git = "https://github.com/hottwaj/classproperties.git"}
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.1"
