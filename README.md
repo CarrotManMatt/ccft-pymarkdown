@@ -1,6 +1,7 @@
 # RCFT-PyMarkdown
 
-[![RCFT-PyMarkdown Version](https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2FCarrotManMatt%2Frcft-pymarkdown%2Fmain%2Fpoetry.lock&query=%24.tool.poetry.version&label=RCFT-PyMarkdown)](https://github.com/CarrotManMatt/rcft-pymarkdown)
+[![RCFT-PyMarkdown Version](https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2FCarrotManMatt%2Frcft-pymarkdown%2Fmain%2Fpyproject.toml&query=%24.tool.poetry.version&label=RCFT-PyMarkdown)](https://github.com/CarrotManMatt/rcft-pymarkdown)
+[![PyMarkdown Version](https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2FCarrotManMatt%2Frcft-pymarkdown%2Fmain%2Fpoetry.lock&query=%24.package%5B%3F%28%40.name%3D%3D%27pymarkdownlnt%27%29%5D.version&logo=Markdown&label=PyMarkdown)](https://github.com/jackdewinter/pymarkdown)
 
 A Python wrapper around [jackdewinter's PyMarkdown linter](https://github.com/jackdewinter/pymarkdown) to remove custom-formatted tables in Markdown files.
 
