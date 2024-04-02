@@ -17,32 +17,26 @@ When running [PyMarkdown](https://github.com/jackdewinter/pymarkdown) it may inc
 
 ## Usage
 
-To perform linting and remove custom-formatted tables, replace `pymarkdown` with `rcft-pymarkdown` in any commands you wish to run.
+### Scanning All Files After Removing Custom-Formatted Tables
+
+To perform linting using PyMarkdown, after removing custom-formatted tables, use the `scan-all` action:
 
 ```shell
-rcft-pymarkdown {...}
-```
-
-* Replace `{...}` with the rest of the `pymarkdown` command you wish to run
-
-For example:
-
-```shell
-rcft-pymarkdown scan .
+rcft-pymarkdown scan-all
 ```
 
 ### Manually Removing Custom-Formatted Tables
 
-To manually remove any custom-formatted tables without running PyMarkdown, use the `--remove` flag:
+To manually remove any custom-formatted tables without running PyMarkdown, use the `remove` action:
 
 ```shell
-rcft-pymarkdown --remove
+rcft-pymarkdown remove
 ```
 
 ### Manually Restoring Custom-Formatted Tables
 
-To manually restore any custom-formatted tables without running PyMarkdown, use the `--restore` flag:
+To manually restore any custom-formatted tables without running PyMarkdown, use the `restore` action:
 
 ```shell
-rcft-pymarkdown --restore
+rcft-pymarkdown restore
 ```
