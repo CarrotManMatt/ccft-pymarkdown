@@ -1,3 +1,5 @@
+"""Console entry point for RCFT-PyMarkdown."""
+
 import functools
 from collections.abc import Sequence
 

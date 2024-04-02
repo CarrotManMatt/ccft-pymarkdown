@@ -1,3 +1,5 @@
+"""Perform the removal of  custom-formatted tables from Markdown files."""
+
 from collections.abc import Sequence
 
 __all__: Sequence[str] = (
@@ -17,6 +19,7 @@ from rcft_pymarkdown import utils
 
 
 def remove_custom_formatted_tables_from_file(original_file_path: Path) -> None:
+    """Remove custom-formatted tables from given path to a Markdown file."""
     table_lines: MutableSequence[int] = []
     custom_formatted_table_lines: MutableSequence[int] = []
 

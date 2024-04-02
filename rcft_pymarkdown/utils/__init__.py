@@ -1,3 +1,5 @@
+"""Common utils made available for use throughout this project."""
+
 from collections.abc import Sequence
 
 __all__: Sequence[str] = ("PROJECT_ROOT",)

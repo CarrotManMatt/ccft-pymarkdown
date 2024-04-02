@@ -1,3 +1,5 @@
+"""Perform the restoration of Markdown files that had custom-formatted tables removed."""
+
 from collections.abc import Sequence
 
 __all__: Sequence[str] = ("restore_custom_formatted_tables_from_all_files",)
