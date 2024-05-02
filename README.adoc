@@ -1,4 +1,12 @@
-# RCFT-PyMarkdown
+= RCFT-PyMarkdown
+Matthew Norton <matt@carrotmanmatt.com>
+v1.0, 02/05/2024
+
+ifndef::env-idea[]
+include::.asciidoctorconfig[]
+endif::[]
+
+A Python wrapper around {url-pymarkdown}[jackdewinter's PyMarkdown linter] to remove custom-formatted tables in Markdown files.
 
 [![RCFT-PyMarkdown Version](https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2FCarrotManMatt%2Frcft-pymarkdown%2Fmain%2Fpyproject.toml&query=%24.tool.poetry.version&label=RCFT-PyMarkdown)](https://github.com/CarrotManMatt/rcft-pymarkdown)
 [![Python Version](https://img.shields.io/badge/Python-3.12-blue?&logo=Python&logoColor=white)](https://python.org/downloads/release/python-3122)
@@ -9,7 +17,6 @@
 [![pre-commit.ci Status](https://results.pre-commit.ci/badge/github/CarrotManMatt/rcft-pymarkdown/main.svg)](https://results.pre-commit.ci/latest/github/CarrotManMatt/rcft-pymarkdown/main)
 [![PyMarkdown Status](https://img.shields.io/badge/validated-brightgreen?logo=markdown&label=PyMarkdown)](https://github.com/jackdewinter/pymarkdown)
 
-A Python wrapper around [jackdewinter's PyMarkdown linter](https://github.com/jackdewinter/pymarkdown) to remove custom-formatted tables in Markdown files.
 
 When running [PyMarkdown](https://github.com/jackdewinter/pymarkdown) it may incorrectly flag errors inside a table that has correct formatting. Using this wrapper, the tables will temporarily be removed to prevent these incorrect errors.
 
