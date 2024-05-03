@@ -1,8 +1,6 @@
 ---
 extends: default
 
-locale: en_GB
-
 rules:
     anchors:
         forbid-duplicated-anchors: true
