@@ -21,8 +21,8 @@
 
 :url-python-home: https://python.org
 :url-python: {url-python-home}
-:url-python-312: {url-python-home}/downloads/release/python-3122
-:url-python-312-windows-installer: {url-python-home}/ftp/python/3.12.2/python-3.12.2-amd64.exe
+:url-python-312: {url-python-home}/downloads/release/python-3123
+:url-python-312-windows-installer: {url-python-home}/ftp/python/3.12.3/python-3.12.3-amd64.exe
 :url-python-wiki-pep8: {_url-python-peps}/pep-0008
 :url-python-wiki-pep350-mnemonics: {_url-python-peps}/pep-0350#mnemonics
 :url-python-wiki-pathlib: {_url-python-wiki}/pathlib

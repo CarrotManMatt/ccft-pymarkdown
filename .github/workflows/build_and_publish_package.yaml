@@ -1,8 +1,9 @@
+---
 name: Build and Publish Package to PyPi
 
 on:
     release:
-        types: [ published ]
+        types: [published]
 
 jobs:
     build-and-publish-package:
@@ -15,17 +16,17 @@ jobs:
             id-token: write
 
         steps:
-            - name: Mint token
-              id: mint
-              uses: tschm/token-mint-action@v1.0.3
+          - name: Mint token
+            id: mint
+            uses: tschm/token-mint-action@v1.0.3
 
-            - name: Build and Publish Package to PyPi
-              uses: code-specialist/pypi-poetry-publish@v1.2
-              with:
-                  PACKAGE_DIRECTORY: "./rcft_pymarkdown/"
-                  PYTHON_VERSION: "3.12"
-                  POETRY_VERSION: "1.8.2"
-                  POETRY_CORE_VERSION: "1.9.0"
-                  BRANCH: "main"
-                  ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                  PUBLISH_REGISTRY_PASSWORD: ${{ steps.mint.outputs.api-token }}
+          - name: Build and Publish Package to PyPi
+            uses: code-specialist/pypi-poetry-publish@v1.2
+            with:
+                PACKAGE_DIRECTORY: ./rcft_pymarkdown/
+                PYTHON_VERSION: "3.12"
+                POETRY_VERSION: 1.8.2
+                POETRY_CORE_VERSION: 1.9.0
+                BRANCH: main
+                ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                PUBLISH_REGISTRY_PASSWORD: ${{ steps.mint.outputs.api-token }}
