@@ -1,6 +1,10 @@
 ---
 extends: default
 
+# noinspection YAMLSchemaValidation
+ignore:
+    - .venv/*
+
 rules:
     anchors:
         forbid-duplicated-anchors: true
