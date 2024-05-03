@@ -16,7 +16,7 @@ jobs:  # yamllint disable-line rule:key-ordering
               uses: actions/checkout@v4
 
             - name: Install AsciiDoctor
-              run: apt-get update -y && apt-get install -y --no-install-recommends asciidoctor
+              run: sudo apt-get update -y && sudo apt-get install -y --no-install-recommends asciidoctor
 
             - name: Run AsciiDoctor
               run: asciidoctor -v --failure-level=WARNING -w -o /dev/null README.adoc

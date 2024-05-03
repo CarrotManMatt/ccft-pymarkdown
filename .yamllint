@@ -1,7 +1,7 @@
 ---
 extends: default
 
-locale: en_GB
+locale: en_UK.UTF-8
 
 rules:
     anchors:
