@@ -12,7 +12,8 @@ jobs:  # yamllint disable-line rule:key-ordering
         runs-on: ubuntu-latest
 
         steps:
-            - uses: actions/checkout@v2
+            - name: Check out repository
+              uses: actions/checkout@v4
 
             - name: Install AsciiDoctor
               run: apt-get update -y && apt-get install -y --no-install-recommends asciidoctor
