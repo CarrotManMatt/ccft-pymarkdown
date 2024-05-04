@@ -9,6 +9,7 @@ __all__: Sequence[str] = (
     "remove_custom_formatted_tables_from_file",
     "RemoveCustomFormattedTables",
 )
+__version__ = "v1.0.2"
 
 
 from rcft_pymarkdown.console import run
