@@ -4,8 +4,8 @@ version = "0.0.1"
 license = "Apache-2.0"
 description = "A Python wrapper around jackdewinter's PyMarkdown linter to remove custom tables in Markdown files"
 authors = ["CarrotManMatt <matt@carrotmanmatt.com>"]
-readme = "README.md"
-repository = "https://github.com/CarrotManMatt/"
+readme = "README.adoc"
+repository = "https://github.com/CarrotManMatt/rcft-pymarkdown.git"
 keywords = ["markdown", "linter", "static analysis"]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -28,19 +28,23 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry.scripts]
 rcft-pymarkdown = "rcft_pymarkdown.console:run"
 
+
 [tool.poetry.dependencies]
 python = "^3.12"
 pymarkdownlnt = "^0.9"
 gitpython = "^3.1"
 marko = "^2.0"
-setuptools = "^69.2"
+setuptools = "^69.5"
 classproperties = {git = "https://github.com/hottwaj/classproperties.git"}
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^8.1"
-ruff = "^0.3"
-pre-commit = "^3.6"
-mypy = "^1.9"
+pytest = "^8.2"
+ruff = "^0.4"
+pre-commit = "^3.7"
+mypy = "^1.10"
+yamllint = "^1.35"
+
+
 
 [tool.pytest.ini_options]
 filterwarnings = ["ignore:'audioop':DeprecationWarning"]
@@ -126,15 +130,14 @@ select = [
     "PERF",
     "RUF",
 ]
-fixable = ["I001", "TCH", "F401", "RUF100"]
+fixable = ["I001", "TCH", "F401", "COM812"]
 ignore = [
     "D203",
     "D212",
     "N806",
     "S603",
     "ANN101",
-    "PLR0915",
-    "UP040",  # NOTE: Mypy does not currently support PEP 695 type aliases, so they should not be used
+    "UP040",  # NOTE: mypy does not currently support PEP 695 type aliases, so they should not be used
 ]
 task-tags = [
     "TODO",
@@ -149,6 +152,9 @@ task-tags = [
     "DONE",
 ]
 
+[tool.ruff.lint.per-file-ignores]
+"tests/**/test_*.py" = ["S101"]
+
 [tool.ruff.lint.flake8-pytest-style]
 parametrize-values-type = "tuple"
 
@@ -162,6 +168,7 @@ max-doc-length = 95
 [tool.ruff.lint.pylint]
 allow-magic-value-types = ["str", "bytes", "int"]
 max-args = 7
+max-returns = 10
 max-branches = 19
 
 [tool.ruff.lint.pyupgrade]
