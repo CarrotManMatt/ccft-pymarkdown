@@ -1,10 +1,11 @@
 """Console entry point for RCFT-PyMarkdown."""
 
-import functools
 from collections.abc import Sequence
 
 __all__: Sequence[str] = ("run",)
 
+
+import functools
 import subprocess
 import sys
 from argparse import ArgumentParser, Namespace

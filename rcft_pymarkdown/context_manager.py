@@ -4,6 +4,7 @@ from collections.abc import Sequence
 
 __all__: Sequence[str] = ("RemoveCustomFormattedTables",)
 
+
 from types import TracebackType
 
 from rcft_pymarkdown import (

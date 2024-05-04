@@ -4,6 +4,7 @@ from collections.abc import Sequence
 
 __all__: Sequence[str] = ("PROJECT_ROOT",)
 
+
 from pathlib import Path
 from typing import Final
 
