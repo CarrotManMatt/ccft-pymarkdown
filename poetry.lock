@@ -28,21 +28,6 @@ files = [
 ]
 
 [[package]]
-name = "classproperties"
-version = "0.2"
-description = "Decorators for classproperty and cached_classproperty"
-optional = false
-python-versions = ">=3.5"
-files = []
-develop = false
-
-[package.source]
-type = "git"
-url = "https://github.com/hottwaj/classproperties.git"
-reference = "HEAD"
-resolved_reference = "cc20df2fbdf7dd7c4cd595b99418a21618bd7812"
-
-[[package]]
 name = "colorama"
 version = "0.4.6"
 description = "Cross-platform colored terminal text."
@@ -543,4 +528,4 @@ dev = ["doc8", "flake8", "flake8-import-order", "rstcheck[sphinx]", "sphinx"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "29c626cc29e904cf87b7f4214b61304e333fd2dc062090b5967346ba7208ed0a"
+content-hash = "52415683f4564f68bc1afb3cbc4befb309e8ebe8aa3404c288373bfe991279bd"

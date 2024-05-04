@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "RCFT-PyMarkdown"
-version = "v1.0.3"
+version = "v1.0.4"
 license = "Apache-2.0"
 description = "A Python wrapper around jackdewinter's PyMarkdown linter to remove custom tables in Markdown files"
 authors = ["CarrotManMatt <matt@carrotmanmatt.com>"]
@@ -35,7 +35,6 @@ pymarkdownlnt = "^0.9"
 gitpython = "^3.1"
 marko = "^2.0"
 setuptools = "^69.5"
-classproperties = {git = "https://github.com/hottwaj/classproperties.git"}
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.2"
