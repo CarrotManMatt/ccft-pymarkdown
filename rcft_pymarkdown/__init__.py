@@ -7,8 +7,11 @@ __all__: Sequence[str] = (
     "restore_custom_formatted_tables_from_all_files",
     "remove_custom_formatted_tables_from_all_files",
     "remove_custom_formatted_tables_from_file",
+    "RemoveCustomFormattedTables",
 )
 
+
+from rcft_pymarkdown.context_manager import RemoveCustomFormattedTables
 from rcft_pymarkdown.console import run
 from rcft_pymarkdown.remove_custom_formatted_tables import (
     remove_custom_formatted_tables_from_all_files,

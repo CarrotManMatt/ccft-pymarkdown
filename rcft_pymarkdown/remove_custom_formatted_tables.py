@@ -1,4 +1,4 @@
-"""Perform the removal of  custom-formatted tables from Markdown files."""
+"""Perform the removal of custom-formatted tables from Markdown files."""
 
 from collections.abc import Sequence
 
@@ -6,6 +6,7 @@ __all__: Sequence[str] = (
     "remove_custom_formatted_tables_from_all_files",
     "remove_custom_formatted_tables_from_file",
 )
+
 
 import re
 import shutil
@@ -18,7 +19,7 @@ from git import PathLike, Repo
 from rcft_pymarkdown import utils
 
 
-def remove_custom_formatted_tables_from_file(original_file_path: Path) -> None:
+def remove_custom_formatted_tables_from_file(original_file_path: Path) -> None:  # noqa: PLR0915
     """Remove custom-formatted tables from given path to a Markdown file."""
     table_lines: MutableSequence[int] = []
     custom_formatted_table_lines: MutableSequence[int] = []

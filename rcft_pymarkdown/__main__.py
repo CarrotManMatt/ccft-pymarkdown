@@ -4,6 +4,7 @@ from collections.abc import Sequence
 
 __all__: Sequence[str] = ()
 
+
 from rcft_pymarkdown import console
 
 if __name__ == "__main__":

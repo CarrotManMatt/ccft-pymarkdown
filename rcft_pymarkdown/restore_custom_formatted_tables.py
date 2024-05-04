@@ -4,6 +4,7 @@ from collections.abc import Sequence
 
 __all__: Sequence[str] = ("restore_custom_formatted_tables_from_all_files",)
 
+
 from typing import TYPE_CHECKING
 
 from rcft_pymarkdown import utils
