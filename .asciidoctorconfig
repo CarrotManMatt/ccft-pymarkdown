@@ -76,6 +76,7 @@
 :url-wiki-duck-typing: {_url-wikipedia}/Duck_typing
 :url-wiki-static-type-checking: {_url-wikipedia}/Type_system#Static_type_checking
 :url-wiki-subdirectory: https://merriam-webster.com/dictionary/subdirectory
+:url-wiki-markdown: {_url-wikipedia}/Markdown
 :url-git-home: https://git-scm.com
 :url-git: {url-git-home}
 :url-git-wiki-push: {url-git-home}/docs/git-push
@@ -107,6 +108,8 @@
 :url-rust: {url-rust-home}
 :url-pymarkdown-repository: {_url-github}/jackdewinter/pymarkdown
 :url-pymarkdown: {url-pymarkdown-repository}
+:url-yamllint-repository: {_url-github}/adrienverge/yamllint
+:url-yamllint: {url-yamllint-repository}
 :url-poetry-home: https://python-poetry.org
 :url-poetry: {url-poetry-home}
 :url-poetry-installation-instructions: {url-poetry-home}/docs#installing-with-the-official-installer
@@ -168,9 +171,11 @@
 :labelled-url-wiki-pascal-case: {_url-wikipedia}/Camel_case#Variations_and_synonyms[PascalCase]
 :labelled-url-wiki-snake-case: {_url-wikipedia}/Snake_case[snake_case,role=no-link-underline]
 :labelled-url-wiki-all-caps-case: {_url-wikipedia}/All_caps#Computing[ALL_CAPS_CASE,role=no-link-underline]
+:labelled-url-wiki-markdown: {url-wiki-markdown}[MarkDown]
 :labelled-url-git: {url-git}[Git]
 :labelled-url-ruff: {url-ruff}[Ruff]
-:labelled-url-mypy: {url-mypy}[Mypy]
+:labelled-url-mypy: {url-mypy}[mypy]
+:labelled-url-pymarkdown: {url-pymarkdown}[PyMarkdown]
 :labelled-url-rust: {url-rust}[Rust]
 :labelled-url-poetry: {url-poetry}[Poetry]
 :labelled-url-pre-commit: {url-pre-commit}[pre-commit]
