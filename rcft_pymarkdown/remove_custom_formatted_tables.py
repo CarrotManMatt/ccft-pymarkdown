@@ -8,42 +8,17 @@ __all__: Sequence[str] = (
 )
 
 
-import re
 import shutil
-from collections.abc import MutableSequence
 from pathlib import Path
-from typing import Final, TextIO
+from typing import TextIO
 
 from git import PathLike, Repo
 
 from rcft_pymarkdown import utils
 
 
-def remove_custom_formatted_tables_from_file(original_file_path: Path) -> None:  # noqa: PLR0915
+def remove_custom_formatted_tables_from_file(original_file_path: Path) -> None:
     """Remove custom-formatted tables from given path to a Markdown file."""
-    table_lines: MutableSequence[int] = []
-    custom_formatted_table_lines: MutableSequence[int] = []
-
-    original_file: TextIO
-    with original_file_path.open("r") as original_file:
-        line_number: int
-        line: str
-        for line_number, line in enumerate(original_file, 1):
-            if re.match(r"\|(?:( .+)|-+)\|", line):
-                table_lines.append(line_number)
-
-                if re.match(r"\| .+<br/>\* .", line):
-                    custom_formatted_table_lines.append(line_number)
-
-    if custom_formatted_table_lines and not table_lines:
-        INCONSISTENT_TABLE_LINES_MESSAGE: Final[str] = (
-            "Found custom-formatted table lines without any normal table lines."
-        )
-        raise RuntimeError(INCONSISTENT_TABLE_LINES_MESSAGE)
-
-    if not table_lines:
-        return
-
     temp_file_path: Path = shutil.copy2(
         original_file_path,
         original_file_path.parent / f"{original_file_path.name}.original",
@@ -52,48 +27,23 @@ def remove_custom_formatted_tables_from_file(original_file_path: Path) -> None: 
     original_file_path = temp_file_path
     del temp_file_path
 
+    original_file: TextIO
     new_file: TextIO
     with original_file_path.open("r") as original_file, new_file_path.open("w") as new_file:
-        def write_table_if_not_custom_formatted(write_table_line_number: int, *, is_newline: bool = False) -> None:  # noqa: E501
-            write_table_lines: MutableSequence[str] = []
-            while write_table_line_number in table_lines or is_newline:
-                is_newline = False
-
-                if write_table_line_number in custom_formatted_table_lines:
-                    return
-
-                write_table_lines.append(original_file.readline())
-                write_table_line_number += 1
-
-            write_table_line: str
-            for write_table_line in write_table_lines:
-                new_file.write(write_table_line)
-
-        line_number = 1
-        at_end_of_original_file: bool = False
-        while not at_end_of_original_file:
-            current_position: int = original_file.tell()
-            line = original_file.readline()
-            at_end_of_original_file = not line
-
-            if line:
-                if line_number not in table_lines and line != "\n":
-                    new_file.write(line)
-                elif line == "\n":
-                    if line_number + 1 not in table_lines:
-                        new_file.write(line)
-                    else:
-                        original_file.seek(current_position)
-                        _ = original_file.readline()
-                        original_file.seek(current_position)
-                        write_table_if_not_custom_formatted(line_number, is_newline=True)
-                else:
-                    original_file.seek(current_position)
-                    _ = original_file.readline()
-                    original_file.seek(current_position)
-                    write_table_if_not_custom_formatted(line_number, is_newline=False)
-
-            line_number += 1
+        line: str
+        for line in original_file:
+            new_file.write(
+                line.replace(
+                    "<br>* ",
+                    "<br> ",
+                ).replace(
+                    "<br/>* ",
+                    "<br/> ",
+                ).replace(
+                    "| * ",
+                    "| ",
+                ),
+            )
 
 
 def remove_custom_formatted_tables_from_all_files() -> None:
