@@ -1,10 +1,10 @@
-"""Perform the removal of custom-formatted tables from Markdown files."""
+"""Perform the cleaning of custom-formatted tables from Markdown files."""
 
 from collections.abc import Sequence
 
 __all__: Sequence[str] = (
-    "remove_custom_formatted_tables_from_all_files",
-    "remove_custom_formatted_tables_from_file",
+    "clean_custom_formatted_tables_from_all_files",
+    "clean_custom_formatted_tables_from_single_file",
 )
 
 
@@ -14,11 +14,11 @@ from typing import TextIO
 
 from git import PathLike, Repo
 
-from rcft_pymarkdown import utils
+from ccft_pymarkdown import utils
 
 
-def remove_custom_formatted_tables_from_file(original_file_path: Path) -> None:
-    """Remove custom-formatted tables from given path to a Markdown file."""
+def clean_custom_formatted_tables_from_single_file(original_file_path: Path) -> None:
+    """Clean custom-formatted tables within a Markdown file at a given path."""
     temp_file_path: Path = shutil.copy2(
         original_file_path,
         original_file_path.parent / f"{original_file_path.name}.original",
@@ -46,8 +46,8 @@ def remove_custom_formatted_tables_from_file(original_file_path: Path) -> None:
             )
 
 
-def remove_custom_formatted_tables_from_all_files() -> None:
-    """Remove all custom-formatted tables within every Markdown file in this repository."""
+def clean_custom_formatted_tables_from_all_files() -> None:
+    """Clean custom-formatted tables within every Markdown file in this repository."""
     file_entry: tuple[str | PathLike, object]
     for file_entry in Repo(utils.PROJECT_ROOT).index.entries:
         file_path: Path = utils.PROJECT_ROOT / file_entry[0]
@@ -61,9 +61,9 @@ def remove_custom_formatted_tables_from_all_files() -> None:
         original_file_path: Path = file_path.parent / f"{file_path.name}.original"
         if original_file_path.exists():
             ORIGINAL_FILE_ALREADY_EXISTS_MESSAGE: str = (
-                "Cannot remove custom-formatted tables from Markdown files: "
+                "Cannot clean custom-formatted tables from Markdown files: "
                 f"{original_file_path} already exists."
             )
             raise FileExistsError(ORIGINAL_FILE_ALREADY_EXISTS_MESSAGE)
 
-        remove_custom_formatted_tables_from_file(file_path)
+        clean_custom_formatted_tables_from_single_file(file_path)

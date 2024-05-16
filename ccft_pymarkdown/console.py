@@ -1,4 +1,4 @@
-"""Console entry point for RCFT-PyMarkdown."""
+"""Console entry point for CCFT-PyMarkdown."""
 
 from collections.abc import Sequence
 
@@ -12,12 +12,12 @@ from argparse import ArgumentParser, Namespace
 from subprocess import CompletedProcess
 from typing import TYPE_CHECKING, Final, TypeAlias
 
-from rcft_pymarkdown import (
-    remove_custom_formatted_tables,
-    restore_custom_formatted_tables,
+from ccft_pymarkdown import (
+    clean_custom_formatted_tables,
+    restore_files,
     utils,
 )
-from rcft_pymarkdown.context_manager import RemoveCustomFormattedTables
+from ccft_pymarkdown.context_manager import CleanCustomFormattedTables
 
 if TYPE_CHECKING:
     # noinspection PyProtectedMember
@@ -26,39 +26,40 @@ if TYPE_CHECKING:
     SubParserGroup: TypeAlias = _SubParsersAction[ArgumentParser]
 
 
-def _run_remove(arg_parser: ArgumentParser) -> int:
-    remove_tables_file_exists_error: FileExistsError
+def _run_clean(arg_parser: ArgumentParser) -> int:
+    clean_tables_file_exists_error: FileExistsError
     try:
-        remove_custom_formatted_tables.remove_custom_formatted_tables_from_all_files()
+        clean_custom_formatted_tables.clean_custom_formatted_tables_from_all_files()
 
-    except FileExistsError as remove_tables_file_exists_error:
-        MANUAL_REMOVE_ERROR_IS_ORIGINAL_FILE_ALREADY_EXISTS: Final[bool] = (
-            bool(remove_tables_file_exists_error.args)
-            and "already exists" in remove_tables_file_exists_error.args[0]
+    except FileExistsError as clean_tables_file_exists_error:
+        MANUAL_CLEAN_ERROR_IS_ORIGINAL_FILE_ALREADY_EXISTS: Final[bool] = (
+            bool(clean_tables_file_exists_error.args)
+            and "already exists" in clean_tables_file_exists_error.args[0]
         )
-        if MANUAL_REMOVE_ERROR_IS_ORIGINAL_FILE_ALREADY_EXISTS:
-            MANUAL_REMOVE_REMOVE_TABLES_FILE_EXISTS_ERROR_MESSAGE: Final[str] = (
-                f"{remove_tables_file_exists_error.args[0]} "
-                f"Use `{arg_parser.prog} --restore` to first restore the files "
+        if MANUAL_CLEAN_ERROR_IS_ORIGINAL_FILE_ALREADY_EXISTS:
+            MANUAL_CLEAN_TABLES_FILE_EXISTS_ERROR_MESSAGE: Final[str] = (
+                f"{clean_tables_file_exists_error.args[0]} "
+                f"Use `{arg_parser.prog} restore` to first restore the files "
                 "to their original state."
             )
-            raise type(remove_tables_file_exists_error)(
-                MANUAL_REMOVE_REMOVE_TABLES_FILE_EXISTS_ERROR_MESSAGE  # noqa: COM812
-            ) from remove_tables_file_exists_error
+            raise type(clean_tables_file_exists_error)(
+                MANUAL_CLEAN_TABLES_FILE_EXISTS_ERROR_MESSAGE  # noqa: COM812
+            ) from clean_tables_file_exists_error
 
-        raise remove_tables_file_exists_error from remove_tables_file_exists_error
+        raise clean_tables_file_exists_error from clean_tables_file_exists_error
 
     return 0
 
 
 def _run_restore() -> int:
-    restore_custom_formatted_tables.restore_custom_formatted_tables_from_all_files()
+    restore_files.restore_all_markdown_files()
     return 0
 
 
 def _run_scan_all(arg_parser: ArgumentParser) -> int:
+    clean_tables_file_exists_error: FileExistsError
     try:
-        with RemoveCustomFormattedTables():
+        with CleanCustomFormattedTables():
             parser_output: CompletedProcess[bytes] = subprocess.run(
                 [
                     sys.executable,
@@ -72,29 +73,29 @@ def _run_scan_all(arg_parser: ArgumentParser) -> int:
                 check=True,
             )
 
-    except FileExistsError as remove_tables_file_exists_error:
+    except FileExistsError as clean_tables_file_exists_error:
         WITH_PYMARKDOWN_ERROR_IS_ORIGINAL_FILE_ALREADY_EXISTS: Final[bool] = (
-            bool(remove_tables_file_exists_error.args)
-            and "already exists" in remove_tables_file_exists_error.args[0]
+            bool(clean_tables_file_exists_error.args)
+            and "already exists" in clean_tables_file_exists_error.args[0]
         )
         if WITH_PYMARKDOWN_ERROR_IS_ORIGINAL_FILE_ALREADY_EXISTS:
-            WITH_PYMARKDOWN_REMOVE_TABLES_FILE_EXISTS_ERROR_MESSAGE: Final[str] = (
-                f"{remove_tables_file_exists_error.args[0]} "
-                f"Use `{arg_parser.prog} --restore` to first restore the files "
+            WITH_PYMARKDOWN_CLEAN_TABLES_FILE_EXISTS_ERROR_MESSAGE: Final[str] = (
+                f"{clean_tables_file_exists_error.args[0]} "
+                f"Use `{arg_parser.prog} restore` to first restore the files "
                 "to their original state."
             )
-            raise type(remove_tables_file_exists_error)(
-                WITH_PYMARKDOWN_REMOVE_TABLES_FILE_EXISTS_ERROR_MESSAGE  # noqa: COM812
-            ) from remove_tables_file_exists_error
+            raise type(clean_tables_file_exists_error)(
+                WITH_PYMARKDOWN_CLEAN_TABLES_FILE_EXISTS_ERROR_MESSAGE  # noqa: COM812
+            ) from clean_tables_file_exists_error
 
-        raise remove_tables_file_exists_error from remove_tables_file_exists_error
+        raise clean_tables_file_exists_error from clean_tables_file_exists_error
 
     return parser_output.returncode
 
 
 def _set_up_arg_parser() -> ArgumentParser:
     arg_parser: ArgumentParser = ArgumentParser(
-        prog="rcft-pymarkdown",
+        prog="ccft-pymarkdown",
         description="Lint Markdown files after removing custom-formatted tables.",
     )
 
@@ -104,12 +105,12 @@ def _set_up_arg_parser() -> ArgumentParser:
         dest="action",
     )
 
-    remove_action_sub_parser: ArgumentParser = action_sub_parser_group.add_parser(
-        "remove",
-        help="Manually remove custom formatted tables from all Markdown files.",
+    clean_action_sub_parser: ArgumentParser = action_sub_parser_group.add_parser(
+        "clean",
+        help="Manually clean custom-formatted tables from all Markdown files.",
     )
-    remove_action_sub_parser.set_defaults(
-        run_func=functools.partial(_run_remove, arg_parser=arg_parser),
+    clean_action_sub_parser.set_defaults(
+        run_func=functools.partial(_run_clean, arg_parser=arg_parser),
     )
 
     restore_action_sub_parser: ArgumentParser = action_sub_parser_group.add_parser(
@@ -130,7 +131,7 @@ def _set_up_arg_parser() -> ArgumentParser:
 
 
 def run(argv: Sequence[str] | None = None) -> int:
-    """Run RCFT-PyMarkdown."""
+    """Run CCFT-PyMarkdown."""
     arg_parser: ArgumentParser = _set_up_arg_parser()
 
     parsed_args: Namespace = arg_parser.parse_args(argv)

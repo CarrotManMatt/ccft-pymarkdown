@@ -29,9 +29,9 @@
 :url-python-wiki-iterable: {_url-python-wiki}/collections.abc.html#collections.abc.Iterable
 :url-python-wiki-isinstance: {_url-python-wiki}/functions.html#isinstance
 :url-python-wiki-hasattr: {_url-python-wiki}/functions.html#hasattr
-:url-project-repo: {_url-github}/CarrotManMatt/rcft-pymarkdown
+:url-project-repo: {_url-github}/CarrotManMatt/ccft-pymarkdown
 :url-project-main-branch: {url-project-repo}
-:url-project-pypi: https://pypi.org/project/RCFT-PyMarkdown
+:url-project-pypi: https://pypi.org/project/CCFT-PyMarkdown
 :url-wiki-version-control-system: {_url-wikipedia}/Version_control
 :url-wiki-line-separators: {_url-wikipedia}/Newline#Representation
 :url-wiki-microsoft-windows: {_url-wikipedia}/Microsoft_Windows

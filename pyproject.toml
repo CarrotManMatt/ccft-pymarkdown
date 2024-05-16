@@ -1,11 +1,11 @@
 [tool.poetry]
-name = "RCFT-PyMarkdown"
+name = "CCFT-PyMarkdown"
 version = "v1.0.5"
 license = "Apache-2.0"
-description = "A Python wrapper around jackdewinter's PyMarkdown linter to remove custom tables in Markdown files"
+description = "A Python wrapper around jackdewinter's PyMarkdown linter to suppress errors, caused by custom-formatted tables in Markdown files"
 authors = ["Matt Norton <matt@carrotmanmatt.com>"]
 readme = "README.adoc"
-repository = "https://github.com/CarrotManMatt/rcft-pymarkdown.git"
+repository = "https://github.com/CarrotManMatt/ccft-pymarkdown.git"
 keywords = ["markdown", "linter", "static analysis"]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -19,14 +19,14 @@ classifiers = [
     "Topic :: Text Processing :: Markup :: Markdown",
     "Typing :: Typed",
 ]
-packages = [{include = "rcft_pymarkdown"}]
+packages = [{include = "ccft_pymarkdown"}]
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-rcft-pymarkdown = "rcft_pymarkdown.console:run"
+ccft-pymarkdown = "ccft_pymarkdown.console:run"
 
 
 [tool.poetry.dependencies]
