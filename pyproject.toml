@@ -8,7 +8,7 @@ readme = "README.adoc"
 repository = "https://github.com/CarrotManMatt/ccft-pymarkdown.git"
 keywords = ["markdown", "linter", "static analysis"]
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 5 - Production/Stable",
     "Environment :: Console",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: Apache Software License",
