@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "CCFT-PyMarkdown"
-version = "v1.0.5"
+version = "v1.1.0"
 license = "Apache-2.0"
 description = "A Python wrapper around jackdewinter's PyMarkdown linter to suppress errors, caused by custom-formatted tables in Markdown files"
 authors = ["Matt Norton <matt@carrotmanmatt.com>"]
