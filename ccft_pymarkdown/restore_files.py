@@ -1,20 +1,20 @@
-"""Perform the restoration of Markdown files that had custom-formatted tables removed."""
+"""Perform the restoration of Markdown files that had custom-formatted tables cleaned."""
 
 from collections.abc import Sequence
 
-__all__: Sequence[str] = ("restore_custom_formatted_tables_from_all_files",)
+__all__: Sequence[str] = ("restore_all_markdown_files",)
 
 
 from typing import TYPE_CHECKING
 
-from rcft_pymarkdown import utils
+from ccft_pymarkdown import utils
 
 if TYPE_CHECKING:
     from pathlib import Path
 
 
-def restore_custom_formatted_tables_from_all_files() -> None:
-    """Return all Markdown files to their original state before linting."""
+def restore_all_markdown_files() -> None:
+    """Return all Markdown files to their original state before cleaning."""
     file_path: Path
     for file_path in utils.PROJECT_ROOT.rglob("*.md.original"):
         FILE_IS_TEMPORARY_ORIGINAL: bool = (

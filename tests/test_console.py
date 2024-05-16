@@ -8,13 +8,13 @@ from typing import Final
 
 from _pytest.capture import CaptureFixture, CaptureResult
 
-from rcft_pymarkdown import console
+from ccft_pymarkdown import console
 
 
 class TestConsoleRun:
     """Test case to unit-test the `run` function."""
 
-    USAGE_MESSAGE: Final[str] = "usage: rcft-pymarkdown [-h] {remove,restore,scan-all}"
+    USAGE_MESSAGE: Final[str] = "usage: ccft-pymarkdown [-h] {clean,restore,scan-all}"
 
     def test_error_when_no_args(self, capsys: CaptureFixture[str]) -> None:
         EXPECTED_ERROR_MESSAGE: Final[str] = (
