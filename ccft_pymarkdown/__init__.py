@@ -9,7 +9,7 @@ __all__: Sequence[str] = (
     "clean_custom_formatted_tables_from_single_file",
     "CleanCustomFormattedTables",
 )
-__version__ = "v1.1.0"
+__version__ = "v1.1.1"
 
 
 from ccft_pymarkdown.clean_custom_formatted_tables import (
