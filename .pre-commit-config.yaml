@@ -27,7 +27,7 @@ repos:
           - id: gitlint-ci
 
     - repo: https://github.com/gitleaks/gitleaks
-      rev: v8.18.2
+      rev: v8.18.3
       hooks:  # yamllint disable-line rule:key-ordering
           -  # noinspection SpellCheckingInspection
               id: gitleaks
