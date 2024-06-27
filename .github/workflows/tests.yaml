@@ -56,7 +56,7 @@ jobs:  # yamllint disable-line rule:key-ordering
                   python-version: 3.12
 
             - name: Run Ruff
-              run: poetry run ruff check . --no-fix --extend-select TD002,TD003
+              run: poetry run ruff check . --no-fix
 
     yamllint:
         runs-on: ubuntu-latest
