@@ -20,7 +20,7 @@ from ccft_pymarkdown import (
 from ccft_pymarkdown.context_manager import CleanCustomFormattedTables
 
 if TYPE_CHECKING:
-    # noinspection PyProtectedMember
+    # noinspection PyProtectedMember, PyUnresolvedReferences
     from argparse import _SubParsersAction
 
     SubParserGroup: TypeAlias = _SubParsersAction[ArgumentParser]
@@ -99,7 +99,7 @@ def _set_up_arg_parser() -> ArgumentParser:
         description="Lint Markdown files after removing custom-formatted tables.",
     )
 
-    action_sub_parser_group: "SubParserGroup" = arg_parser.add_subparsers(
+    action_sub_parser_group: SubParserGroup = arg_parser.add_subparsers(
         title="action",
         required=True,
         dest="action",
