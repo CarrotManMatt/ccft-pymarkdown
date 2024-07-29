@@ -19,7 +19,7 @@ from ccft_pymarkdown import (
 )
 from ccft_pymarkdown.context_manager import CleanCustomFormattedTables
 
-if TYPE_ CHECKING:
+if TYPE_CHECKING:
     # noinspection PyProtectedMember, PyUnresolvedReferences
     from argparse import _SubParsersAction
 
