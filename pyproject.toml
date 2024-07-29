@@ -33,12 +33,12 @@ ccft-pymarkdown = "ccft_pymarkdown.console:run"
 python = "^3.12"
 pymarkdownlnt = "^0.9"
 gitpython = "^3.1"
-setuptools = "^70.3"
+setuptools = "^71.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3"
 ruff = "^0.5"
-pre-commit = "^3.7"
+pre-commit = "^3.8"
 mypy = "^1.11"
 yamllint = "^1.35"
 
