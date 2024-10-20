@@ -2,15 +2,41 @@
 Matthew Norton <matt@carrotmanmatt.com>
 v1.0, 02/05/2024
 
-ifndef::env-idea[]
-include::.asciidoctorconfig[]
-endif::[]
+:docinfodir: .asciidoctor
+:docinfo: shared
+:project-root: .
+
+:!example-caption:
+:icons: font
+:experimental:
+
+:_url-wikipedia: https://wikipedia.org/wiki
+:_url-github: https://github.com
+
+:url-python-home: https://python.org
+:url-python: {url-python-home}
+:url-python-download: {url-python-home}/downloads
+:url-project-repo: {_url-github}/CarrotManMatt/ccft-pymarkdown
+:url-project-pypi: https://pypi.org/project/CCFT-PyMarkdown
+:url-pymarkdown-repository: {_url-github}/jackdewinter/pymarkdown
+:url-pymarkdown: {url-pymarkdown-repository}
+:url-wiki-markdown: {_url-wikipedia}/Markdown
+:url-mypy-home: https://mypy-lang.org
+:url-mypy: {url-mypy-home}
+:url-ruff-home: https://ruff.rs
+:url-ruff: {url-ruff-home}
+:url-asciidoc-asciidoctor: https://asciidoctor.org
+:url-yamllint-repository: {_url-github}/adrienverge/yamllint
+:url-yamllint: {url-yamllint-repository}
+
+:labelled-url-wiki-markdown: {url-wiki-markdown}[MarkDown]
+:labelled-url-pymarkdown: {url-pymarkdown}[PyMarkdown]
 
 A Python wrapper around {url-pymarkdown}[jackdewinter's PyMarkdown linter] to suppress {labelled-url-pymarkdown} errors, caused by custom-formatted tables in {labelled-url-wiki-markdown} files.
 
 image:https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2FCarrotManMatt%2Fccft-pymarkdown%2Fmain%2Fpyproject.toml&query=%24.tool.poetry.version&label=CCFT-PyMarkdown[Current Version,link={url-project-repo}]
 image:https://img.shields.io/pypi/v/ccft-pymarkdown[PyPI - Version,link={url-project-pypi}]
-image:https://img.shields.io/badge/Python-3.12-blue?&logo=Python&logoColor=white[Python Version,link={url-python-312}]
+image:https://img.shields.io/badge/Python-3.12-blue?&logo=Python&logoColor=white[Python Version,link={url-python-download}]
 image:https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2FCarrotManMatt%2Fccft-pymarkdown%2Fmain%2Fpoetry.lock&query=%24.package%5B%3F%28%40.name%3D%3D%27pymarkdownlnt%27%29%5D.version&logo=Markdown&label=PyMarkdown[PyMarkdown Version,link={url-pymarkdown}]
 image:https://github.com/CarrotManMatt/ccft-pymarkdown/actions/workflows/tests.yaml/badge.svg[Tests Status,link={url-project-repo}/actions/workflows/tests.yaml]
 image:https://img.shields.io/badge/mypy-checked-%232EBB4E&label=mypy[mypy Status,link={url-mypy}]
@@ -21,7 +47,7 @@ image:https://img.shields.io/badge/validated-brightgreen?logo=yaml&label=yamllin
 
 
 When running {labelled-url-pymarkdown} it may incorrectly flag errors inside a table that has correct formatting.
-Using this wrapper, the errors will be suppressed, by temporarily cleaning any custom-formatted tables.
+Using this wrapper, the errors will be suppressed by temporarily cleaning any custom-formatted tables.
 
 == Usage
 
