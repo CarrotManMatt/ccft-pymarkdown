@@ -12,7 +12,7 @@ dev = [
 lint-format = ["ruff>=0.8", "taplo"]
 pre-commit = ["pre-commit"]
 test = ["pytest"]
-type-check = ["mypy>=1.12"]
+type-check = ["mypy>=1.12", { include-group = "test" }]
 
 [project]
 authors = [{ name = "Matt Norton", email = "matt@carrotmanmatt.com" }]
