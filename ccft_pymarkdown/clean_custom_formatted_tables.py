@@ -1,23 +1,26 @@
 """Perform the cleaning of custom-formatted tables from Markdown files."""
 
-from collections.abc import Sequence
+import shutil
+from typing import TYPE_CHECKING
 
-__all__: Sequence[str] = (
+from git import Repo
+
+from ccft_pymarkdown import utils
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+    from pathlib import Path
+    from typing import TextIO
+
+    from git import PathLike
+
+__all__: "Sequence[str]" = (
     "clean_custom_formatted_tables_from_all_files",
     "clean_custom_formatted_tables_from_single_file",
 )
 
 
-import shutil
-from pathlib import Path
-from typing import TextIO
-
-from git import PathLike, Repo
-
-from ccft_pymarkdown import utils
-
-
-def clean_custom_formatted_tables_from_single_file(original_file_path: Path) -> None:
+def clean_custom_formatted_tables_from_single_file(original_file_path: "Path") -> None:
     """Clean custom-formatted tables within a Markdown file at a given path."""
     temp_file_path: Path = shutil.copy2(
         original_file_path,
@@ -36,10 +39,12 @@ def clean_custom_formatted_tables_from_single_file(original_file_path: Path) -> 
                 line.replace(
                     "<br>* ",
                     "<br> ",
-                ).replace(
+                )
+                .replace(
                     "<br/>* ",
                     "<br/> ",
-                ).replace(
+                )
+                .replace(
                     "| * ",
                     "| ",
                 ),

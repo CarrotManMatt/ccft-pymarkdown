@@ -1,14 +1,17 @@
 """Common utils made available for use throughout this project."""
 
-from collections.abc import Sequence
-
-__all__: Sequence[str] = ("PROJECT_ROOT",)
-
-
 from pathlib import Path
-from typing import Final
+from typing import TYPE_CHECKING, Final
 
-from git import InvalidGitRepositoryError, PathLike, Repo
+from git import InvalidGitRepositoryError, Repo
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+    from typing import Final
+
+    from git import PathLike
+
+__all__: "Sequence[str]" = ("PROJECT_ROOT",)
 
 
 def _get_project_root() -> Path:
@@ -40,4 +43,4 @@ def _get_readme_root() -> Path:
     raise FileNotFoundError(NO_ROOT_DIRECTORY_MESSAGE)
 
 
-PROJECT_ROOT: Final[Path] = _get_project_root()
+PROJECT_ROOT: "Final[Path]" = _get_project_root()

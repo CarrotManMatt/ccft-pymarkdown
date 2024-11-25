@@ -1,16 +1,10 @@
 """Console entry point for CCFT-PyMarkdown."""
 
-from collections.abc import Sequence
-
-__all__: Sequence[str] = ("run",)
-
-
 import functools
 import subprocess
 import sys
-from argparse import ArgumentParser, Namespace
-from subprocess import CompletedProcess
-from typing import TYPE_CHECKING, Final, TypeAlias
+from argparse import ArgumentParser
+from typing import TYPE_CHECKING
 
 from ccft_pymarkdown import (
     clean_custom_formatted_tables,
@@ -20,10 +14,14 @@ from ccft_pymarkdown import (
 from ccft_pymarkdown.context_manager import CleanCustomFormattedTables
 
 if TYPE_CHECKING:
-    # noinspection PyProtectedMember, PyUnresolvedReferences
-    from argparse import _SubParsersAction
+    from argparse import Namespace, _SubParsersAction
+    from collections.abc import Sequence
+    from subprocess import CompletedProcess
+    from typing import Final
 
-    SubParserGroup: TypeAlias = _SubParsersAction[ArgumentParser]
+    type SubParserGroup = _SubParsersAction[ArgumentParser]
+
+__all__: "Sequence[str]" = ("run",)
 
 
 def _run_clean(arg_parser: ArgumentParser) -> int:
@@ -43,7 +41,7 @@ def _run_clean(arg_parser: ArgumentParser) -> int:
                 "to their original state."
             )
             raise type(clean_tables_file_exists_error)(
-                MANUAL_CLEAN_TABLES_FILE_EXISTS_ERROR_MESSAGE  # noqa: COM812
+                MANUAL_CLEAN_TABLES_FILE_EXISTS_ERROR_MESSAGE
             ) from clean_tables_file_exists_error
 
         raise clean_tables_file_exists_error from clean_tables_file_exists_error
@@ -85,7 +83,7 @@ def _run_scan_all(arg_parser: ArgumentParser) -> int:
                 "to their original state."
             )
             raise type(clean_tables_file_exists_error)(
-                WITH_PYMARKDOWN_CLEAN_TABLES_FILE_EXISTS_ERROR_MESSAGE  # noqa: COM812
+                WITH_PYMARKDOWN_CLEAN_TABLES_FILE_EXISTS_ERROR_MESSAGE
             ) from clean_tables_file_exists_error
 
         raise clean_tables_file_exists_error from clean_tables_file_exists_error
@@ -130,7 +128,7 @@ def _set_up_arg_parser() -> ArgumentParser:
     return arg_parser
 
 
-def run(argv: Sequence[str] | None = None) -> int:
+def run(argv: "Sequence[str] | None" = None) -> int:
     """Run CCFT-PyMarkdown."""
     arg_parser: ArgumentParser = _set_up_arg_parser()
 

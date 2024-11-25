@@ -1,22 +1,24 @@
 """Automated test suite for argument parsing within `console.py`."""
 
-from collections.abc import Sequence
-
-__all__: Sequence[str] = ()
-
-from typing import Final
-
-from _pytest.capture import CaptureFixture, CaptureResult
+from typing import TYPE_CHECKING, Final
 
 from ccft_pymarkdown import console
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+    from typing import Final
+
+    from _pytest.capture import CaptureFixture, CaptureResult
+
+__all__: "Sequence[str]" = ()
 
 
 class TestConsoleRun:
     """Test case to unit-test the `run` function."""
 
-    USAGE_MESSAGE: Final[str] = "usage: ccft-pymarkdown [-h] {clean,restore,scan-all}"
+    USAGE_MESSAGE: "Final[str]" = "usage: ccft-pymarkdown [-h] {clean,restore,scan-all}"
 
-    def test_error_when_no_args(self, capsys: CaptureFixture[str]) -> None:
+    def test_error_when_no_args(self, capsys: "CaptureFixture[str]") -> None:
         EXPECTED_ERROR_MESSAGE: Final[str] = (
             "error: the following arguments are required: action"
         )

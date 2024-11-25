@@ -1,16 +1,14 @@
 """Perform the restoration of Markdown files that had custom-formatted tables cleaned."""
 
-from collections.abc import Sequence
-
-__all__: Sequence[str] = ("restore_all_markdown_files",)
-
-
 from typing import TYPE_CHECKING
 
 from ccft_pymarkdown import utils
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
     from pathlib import Path
+
+__all__: "Sequence[str]" = ("restore_all_markdown_files",)
 
 
 def restore_all_markdown_files() -> None:

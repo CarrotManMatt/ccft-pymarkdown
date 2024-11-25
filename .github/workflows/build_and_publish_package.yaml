@@ -1,11 +1,10 @@
----
 name: Build and Publish Package to PyPi
 
 "on":
     release:
         types: [published]
 
-jobs:  # yamllint disable-line rule:key-ordering
+jobs:
     build-and-publish-package:
         environment: publish
 
@@ -24,10 +23,10 @@ jobs:  # yamllint disable-line rule:key-ordering
             - name: Build and Publish Package to PyPi
               uses: code-specialist/pypi-poetry-publish@v1.2
               with:
-                  ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                  BRANCH: main
-                  PACKAGE_DIRECTORY: ./ccft_pymarkdown/
-                  POETRY_CORE_VERSION: 1.9.0
-                  POETRY_VERSION: 1.8.3
-                  PUBLISH_REGISTRY_PASSWORD: ${{ steps.mint.outputs.api-token }}
-                  PYTHON_VERSION: "3.12"
+                ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                BRANCH: main
+                PACKAGE_DIRECTORY: ./ccft_pymarkdown/
+                POETRY_CORE_VERSION: 1.9.0
+                POETRY_VERSION: 1.8.3
+                PUBLISH_REGISTRY_PASSWORD: ${{ steps.mint.outputs.api-token }}
+                PYTHON_VERSION: "3.12"
