@@ -17,7 +17,7 @@ wheels = [
 
 [[package]]
 name = "ccft-pymarkdown"
-version = "1.2.1.dev3"
+version = "1.2.1.dev4"
 source = { editable = "." }
 dependencies = [
     { name = "gitpython" },
@@ -39,6 +39,7 @@ pre-commit = [
     { name = "pre-commit" },
 ]
 test = [
+    { name = "gitpython" },
     { name = "pytest" },
 ]
 type-check = [
@@ -63,7 +64,10 @@ dev = [
 ]
 lint-format = [{ name = "ruff", specifier = ">=0.8" }]
 pre-commit = [{ name = "pre-commit" }]
-test = [{ name = "pytest" }]
+test = [
+    { name = "gitpython" },
+    { name = "pytest" },
+]
 type-check = [
     { name = "gitpython" },
     { name = "mypy", specifier = ">=1.12" },
