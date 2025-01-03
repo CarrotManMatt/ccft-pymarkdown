@@ -11,8 +11,8 @@ dev = [
 ]
 lint-format = ["ruff>=0.8"]
 pre-commit = ["pre-commit"]
-test = ["gitpython", "pytest"]
-type-check = ["mypy>=1.12", { include-group = "test" }]
+test = ["pytest"]
+type-check = ["mypy>=1.12"]
 
 [project]
 authors = [{ name = "Matt Norton", email = "matt@carrotmanmatt.com" }]
@@ -31,7 +31,7 @@ classifiers = [
     "Topic :: Text Processing :: Markup :: Markdown",
     "Typing :: Typed",
 ]
-dependencies = ["gitpython>=3.1", "pymarkdownlnt>=0.9"]
+dependencies = ["click>=8.1", "pymarkdownlnt>=0.9"]
 description = "A Python wrapper around jackdewinter's PyMarkdown linter to suppress errors, caused by custom-formatted tables in Markdown files"
 dynamic = ["readme", "version"]
 keywords = ["linter", "markdown", "static analysis"]
@@ -39,6 +39,9 @@ license = "Apache-2.0"
 license-files = ["LICENSE"]
 name = "CCFT-PyMarkdown"
 requires-python = ">=3.12"
+
+[project.optional-dependencies]
+gitpython = ["gitpython>=3.1"]
 
 [project.urls]
 Issues = "https://github.com/CarrotManMatt/ccft-pymarkdown/issues"

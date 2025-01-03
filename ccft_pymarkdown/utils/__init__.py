@@ -3,18 +3,21 @@
 from pathlib import Path
 from typing import TYPE_CHECKING, Final
 
-from git import InvalidGitRepositoryError, Repo
-
 if TYPE_CHECKING:
     from collections.abc import Sequence
     from typing import Final
 
     from git import PathLike
 
-__all__: "Sequence[str]" = ("PROJECT_ROOT",)
+__all__: "Sequence[str]" = ("PROJECT_ROOT", "format_exception_to_log_message")
 
 
 def _get_project_root() -> Path:
+    try:
+        from git import InvalidGitRepositoryError, Repo
+    except ImportError:
+        return _get_readme_root()
+
     try:
         raw_project_root: PathLike | str | None = Repo(
             Path.cwd(),
@@ -44,3 +47,19 @@ def _get_readme_root() -> Path:
 
 
 PROJECT_ROOT: "Final[Path]" = _get_project_root()
+
+
+def format_exception_to_log_message(exception: Exception) -> str:
+    message: str = str(exception).strip("\n\r\t .-")
+
+    if message:
+        return message
+
+    if isinstance(exception, FileNotFoundError):
+        return "File does not exist"
+
+    if isinstance(exception, FileExistsError):
+        return "File already exists"
+
+    NO_EXCEPTION_MESSAGE: Final[str] = "Exception did not contain a loggable message."
+    raise ValueError(NO_EXCEPTION_MESSAGE)

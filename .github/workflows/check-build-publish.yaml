@@ -64,7 +64,7 @@ jobs:
                 enable-cache: true
 
             - name: Install mypy From Locked Dependencies
-              run: uv sync --no-group dev --group type-check
+              run: uv sync --no-group dev --group type-check --all-extras
 
             - name: Store Hashed Python Version
               id: store-hashed-python-version
@@ -148,7 +148,7 @@ jobs:
                 enable-cache: true
 
             - name: Install pytest From Locked Dependencies
-              run: uv sync --only-group test
+              run: uv sync --no-group dev --group test --all-extras
 
             - name: Store Hashed Python Version
               id: store-hashed-python-version
