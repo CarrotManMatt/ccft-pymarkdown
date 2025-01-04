@@ -1,21 +1,35 @@
 """Common utils made available for use throughout this project."""
 
+import logging
 from pathlib import Path
 from typing import TYPE_CHECKING, Final
 
+from .click_logging import setup_logging
+
 if TYPE_CHECKING:
-    from collections.abc import Sequence
+    from collections.abc import Iterable, Sequence
+    from logging import Logger
     from typing import Final
 
     from git import PathLike
 
-__all__: "Sequence[str]" = ("PROJECT_ROOT", "format_exception_to_log_message")
+__all__: "Sequence[str]" = (
+    "PROJECT_ROOT",
+    "format_exception_to_log_message",
+    "get_all_markdown_files",
+    "get_all_original_files",
+    "setup_logging",
+)
 
 
-def _get_project_root() -> Path:
+logger: "Final[Logger]" = logging.getLogger("ccft-pymarkdown")
+
+
+def _get_project_root() -> "Path":
     try:
         from git import InvalidGitRepositoryError, Repo
     except ImportError:
+        logger.warning("GitPython is not installed, falling back to naive file exploration")
         return _get_readme_root()
 
     try:
@@ -32,7 +46,7 @@ def _get_project_root() -> Path:
     return Path(raw_project_root)
 
 
-def _get_readme_root() -> Path:
+def _get_readme_root() -> "Path":
     project_root: Path = Path.cwd().resolve()
 
     for _ in range(8):
@@ -49,8 +63,51 @@ def _get_readme_root() -> Path:
 PROJECT_ROOT: "Final[Path]" = _get_project_root()
 
 
+def _naive_get_markdown_files(root: "Path") -> "Iterable[Path]":
+    return (
+        file_path for file_path in root.rglob("*.md") if not file_path.name.startswith(".")
+    )
+
+
+def get_markdown_files(
+    root: "Path" = PROJECT_ROOT, *, with_git: bool = True
+) -> "Iterable[Path]":
+    """"""
+    if not root.is_dir():
+        raise NotADirectoryError(root)
+
+    if not with_git:
+        return _naive_get_markdown_files(root)
+
+    try:
+        from git import InvalidGitRepositoryError, Repo
+    except ImportError:
+        logger.warning("GitPython is not installed, falling back to naive file exploration")
+        return _naive_get_markdown_files(root)
+
+    try:
+        repo_root: Repo = Repo(root)
+    except InvalidGitRepositoryError:
+        return _naive_get_markdown_files(root)
+
+    return (
+        file_path
+        for file_entry in repo_root.index.entries
+        if (file_path := root / file_entry[0]).suffix == ".md"
+    )
+
+
+def get_original_files(root: "Path" = PROJECT_ROOT) -> "Iterable[Path]":
+    """"""
+    if not root.is_dir():
+        raise NotADirectoryError(root)
+
+    return root.rglob("*.md.original")
+
+
 def format_exception_to_log_message(exception: Exception) -> str:
-    message: str = str(exception).strip("\n\r\t .-")
+    """"""
+    message: str = str(exception).strip("\n\r\t -.")
 
     if message:
         return message

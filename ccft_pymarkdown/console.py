@@ -1,60 +1,92 @@
 """Console entry point for CCFT-PyMarkdown."""
 
-import functools
+import importlib.metadata
+import logging
 import subprocess
 import sys
-from argparse import ArgumentParser
+from pathlib import Path
 from typing import TYPE_CHECKING
 
-from ccft_pymarkdown import (
-    clean_custom_formatted_tables,
-    restore_files,
-    utils,
-)
-from ccft_pymarkdown.context_manager import CleanCustomFormattedTables
+import click
+
+from . import utils
+from .clean import clean
+from .context_manager import CleanCustomFormattedTables
+from .restore import restore
 
 if TYPE_CHECKING:
-    from argparse import Namespace, _SubParsersAction
-    from collections.abc import Sequence
+    from collections.abc import Iterable, Sequence
+    from logging import Logger
     from subprocess import CompletedProcess
     from typing import Final
 
-    type SubParserGroup = _SubParsersAction[ArgumentParser]
-
 __all__: "Sequence[str]" = ("run",)
 
+logger: "Final[Logger]" = logging.getLogger("ccft-pymarkdown")
 
-def _run_clean(arg_parser: ArgumentParser) -> int:
+
+@click.group(
+    context_settings={"help_option_names": ["-h", "--help"]},
+    help=f"{
+        (
+            importlib.metadata.metadata("CCFT-PyMarkdown").get("Summary") or "CCFT-PyMarkdown"
+        ).strip(".")
+    }.",
+)
+@click.option(
+    "-v",
+    "--verbose",
+    count=True,
+    callback=utils.setup_logging,
+    expose_value=False,
+)
+def run() -> None:
+    """Run cli entry-point."""
+
+
+@run.command(name="clean", help="Clean custom-formatted tables from all Markdown files.")
+@click.argument(
+    "files",
+    nargs=-1,
+    type=click.Path(exists=True, file_okay=True, dir_okay=True, path_type=Path),
+)
+@click.option(
+    "--with-git/--no-git",
+    default=True,
+)
+def _clean(files: "Iterable[Path] | None", *, with_git: bool) -> None:
     clean_tables_file_exists_error: FileExistsError
     try:
-        clean_custom_formatted_tables.clean_custom_formatted_tables_from_all_files()
+        cleaned_files_count: int = clean(
+            files if files is not None else utils.get_markdown_files(with_git=with_git),
+            with_git=with_git,
+        )
 
     except FileExistsError as clean_tables_file_exists_error:
-        MANUAL_CLEAN_ERROR_IS_ORIGINAL_FILE_ALREADY_EXISTS: Final[bool] = (
-            bool(clean_tables_file_exists_error.args)
-            and "already exists" in clean_tables_file_exists_error.args[0]
-        )
-        if MANUAL_CLEAN_ERROR_IS_ORIGINAL_FILE_ALREADY_EXISTS:
-            MANUAL_CLEAN_TABLES_FILE_EXISTS_ERROR_MESSAGE: Final[str] = (
-                f"{clean_tables_file_exists_error.args[0]} "
-                f"Use `{arg_parser.prog} restore` to first restore the files "
-                "to their original state."
+        if "already exists" in str(clean_tables_file_exists_error):
+            logger.error(str(clean_tables_file_exists_error).strip("\n\r\t -."))  # noqa: TRY400
+            logger.info(
+                "Use `%s restore` to first restore the files to their original state."  # TODO: Get prog
             )
-            raise type(clean_tables_file_exists_error)(
-                MANUAL_CLEAN_TABLES_FILE_EXISTS_ERROR_MESSAGE
-            ) from clean_tables_file_exists_error
+            return
 
         raise clean_tables_file_exists_error from clean_tables_file_exists_error
 
-    return 0
+    if cleaned_files_count == 0:
+        click.echo("No files required cleaning.")
+    else:
+        logger.info("Successfully cleaned %d files.", cleaned_files_count)
 
 
-def _run_restore() -> int:
-    restore_files.restore_all_markdown_files()
-    return 0
+@run.command(name="restore", help="Restore custom-formatted tables from all Markdown files.")
+def _restore() -> None:
+    restore(utils.get_original_files())
 
 
-def _run_scan_all(arg_parser: ArgumentParser) -> int:
+@run.command(
+    name="scan-all", help="Lint all Markdown files after removing custom-formatted tables."
+)
+def _scan_all(arg_parser: "ArgumentParser") -> None:
     clean_tables_file_exists_error: FileExistsError
     try:
         with CleanCustomFormattedTables():
@@ -89,56 +121,3 @@ def _run_scan_all(arg_parser: ArgumentParser) -> int:
         raise clean_tables_file_exists_error from clean_tables_file_exists_error
 
     return parser_output.returncode
-
-
-def _set_up_arg_parser() -> ArgumentParser:
-    arg_parser: ArgumentParser = ArgumentParser(
-        prog="ccft-pymarkdown",
-        description="Lint Markdown files after removing custom-formatted tables.",
-    )
-
-    action_sub_parser_group: SubParserGroup = arg_parser.add_subparsers(
-        title="action",
-        required=True,
-        dest="action",
-    )
-
-    clean_action_sub_parser: ArgumentParser = action_sub_parser_group.add_parser(
-        "clean",
-        help="Manually clean custom-formatted tables from all Markdown files.",
-    )
-    clean_action_sub_parser.set_defaults(
-        run_func=functools.partial(_run_clean, arg_parser=arg_parser),
-    )
-
-    restore_action_sub_parser: ArgumentParser = action_sub_parser_group.add_parser(
-        "restore",
-        help="Manually restore custom formatted tables from all Markdown files.",
-    )
-    restore_action_sub_parser.set_defaults(run_func=_run_restore)
-
-    scan_all_action_sub_parser: ArgumentParser = action_sub_parser_group.add_parser(
-        "scan-all",
-        help="Lint all Markdown files after removing custom-formatted tables.",
-    )
-    scan_all_action_sub_parser.set_defaults(
-        run_func=functools.partial(_run_scan_all, arg_parser=arg_parser),
-    )
-
-    return arg_parser
-
-
-def run(argv: "Sequence[str] | None" = None) -> int:
-    """Run CCFT-PyMarkdown."""
-    arg_parser: ArgumentParser = _set_up_arg_parser()
-
-    parsed_args: Namespace = arg_parser.parse_args(argv)
-
-    return_value: object = parsed_args.run_func()
-    if not isinstance(return_value, int):
-        INVALID_ACTION_RETURN_TYPE: Final[str] = (
-            f"Action {parsed_args.action}'s run_func did not return an integer."
-        )
-        raise TypeError(INVALID_ACTION_RETURN_TYPE)
-
-    return return_value

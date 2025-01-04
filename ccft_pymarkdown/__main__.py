@@ -10,4 +10,4 @@ if TYPE_CHECKING:
 __all__: "Sequence[str]" = ()
 
 if __name__ == "__main__":
-    raise SystemExit(console.run())
+    console.run()
