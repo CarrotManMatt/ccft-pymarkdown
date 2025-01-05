@@ -10,13 +10,23 @@ if TYPE_CHECKING:
     from logging import Logger
     from typing import Final
 
-__all__: "Sequence[str]" = ("setup_logging",)
+
+__all__: "Sequence[str]" = (
+    "LOGGED_USE_GIT_PYTHON",
+    "ClickHandler",
+    "ColourFormatter",
+    "setup_logging",
+)
 
 
 logger: "Final[Logger]" = logging.getLogger("ccft-pymarkdown")
 
+LOGGED_USE_GIT_PYTHON: bool = False
 
-class ColorFormatter(logging.Formatter):
+
+class ColourFormatter(logging.Formatter):
+    """Simple log message formatter that applies click's colour styling."""
+
     @override
     def format(self, record: logging.LogRecord) -> str:
         if not record.exc_info:
@@ -36,22 +46,24 @@ class ColorFormatter(logging.Formatter):
 
 
 class ClickHandler(logging.Handler):
+    """Simple console stream logging handler to export log messages as a click echo."""
+
     @override
     def emit(self, record: logging.LogRecord) -> None:
         try:
-            click.echo(self.format(record), err=record.levelno >= logging.WARNING)
+            click.echo(self.format(record), err=True)
         except Exception:  # noqa: BLE001
             self.handleError(record)
             return
 
 
-def setup_logging(_ctx: click.Context, _param: click.Parameter, value: object) -> None:
-    """"""
-    if not isinstance(value, int):
-        raise TypeError(f"Expected int, got {type(value)} for 'verbose' value.")
-
-    logger.setLevel(logging.DEBUG if value > 0 else logging.INFO)
+def setup_logging(verbosity: int) -> None:
+    """Set up logging using click's echo messaging at the given verbosity."""
+    logger.disabled = False
+    logger.setLevel(
+        logging.DEBUG if verbosity > 0 else logging.INFO if verbosity == 0 else logging.WARNING
+    )
     logger.propagate = False
     click_handler: logging.Handler = ClickHandler()
-    click_handler.formatter = ColorFormatter()
+    click_handler.formatter = ColourFormatter()
     logger.handlers = [click_handler]

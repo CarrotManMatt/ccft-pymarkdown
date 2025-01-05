@@ -31,7 +31,7 @@ classifiers = [
     "Topic :: Text Processing :: Markup :: Markdown",
     "Typing :: Typed",
 ]
-dependencies = ["click>=8.1", "pymarkdownlnt>=0.9"]
+dependencies = ["click>=8.1", "inflect>=7.5", "pymarkdownlnt>=0.9"]
 description = "A Python wrapper around jackdewinter's PyMarkdown linter to suppress errors, caused by custom-formatted tables in Markdown files"
 dynamic = ["readme", "version"]
 keywords = ["linter", "markdown", "static analysis"]
@@ -125,6 +125,9 @@ task-tags = ["BUG", "DONE", "FIXME", "HACK", "IDEA", "ISSUE", "NOBUG", "NOTE", "
 fixture-parentheses = true
 mark-parentheses = true
 parametrize-values-type = "tuple"
+
+[tool.ruff.lint.flake8-tidy-imports]
+banned-module-level-imports = ["inflect"]
 
 [tool.ruff.lint.flake8-type-checking]
 quote-annotations = true
