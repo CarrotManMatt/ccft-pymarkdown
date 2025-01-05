@@ -1,144 +1,356 @@
 """Console entry point for CCFT-PyMarkdown."""
 
-import functools
+import importlib.metadata
+import importlib.util
+import logging
 import subprocess
 import sys
-from argparse import ArgumentParser
+from pathlib import Path
 from typing import TYPE_CHECKING
 
-from ccft_pymarkdown import (
-    clean_custom_formatted_tables,
-    restore_files,
-    utils,
-)
-from ccft_pymarkdown.context_manager import CleanCustomFormattedTables
+import click
+
+from . import utils
+from .clean import clean
+from .context_manager import CleanCustomFormattedTables
+from .restore import restore
+from .utils import PROJECT_ROOT, FileExclusionMethod
 
 if TYPE_CHECKING:
-    from argparse import Namespace, _SubParsersAction
     from collections.abc import Sequence
-    from subprocess import CompletedProcess
+    from collections.abc import Set as AbstractSet
+    from logging import Logger
     from typing import Final
 
-    type SubParserGroup = _SubParsersAction[ArgumentParser]
 
 __all__: "Sequence[str]" = ("run",)
 
+logger: "Final[Logger]" = logging.getLogger("ccft-pymarkdown")
 
-def _run_clean(arg_parser: ArgumentParser) -> int:
+
+def _callback_verbose(ctx: click.Context, _param: click.Parameter, value: object) -> None:
+    if not isinstance(value, int):
+        INVALID_OPTION_TYPE_MESSAGE: Final[str] = (
+            f"Expected {int}, got {type(value)} for 'verbose' value."
+        )
+        raise TypeError(INVALID_OPTION_TYPE_MESSAGE)
+
+    if ctx.obj is None:
+        ctx.obj = {"verbosity": value}
+    elif not isinstance(ctx.obj, dict):
+        INVALID_CONTEXT_TYPE_MESSAGE: Final[str] = f"Invalid 'ctx.obj' type: {type(ctx.obj)}."
+        raise TypeError(INVALID_CONTEXT_TYPE_MESSAGE)
+    else:
+        ctx.obj["verbosity"] = value
+
+    utils.setup_logging(value)
+
+
+def _callback_mutually_exclusive_verbose_and_quiet(
+    ctx: click.Context, _param: click.Parameter, value: object
+) -> None:
+    if not isinstance(value, bool):
+        INVALID_OPTION_TYPE_MESSAGE: Final[str] = (
+            f"Expected bool, got {type(value)} for 'quiet' value."
+        )
+        raise TypeError(INVALID_OPTION_TYPE_MESSAGE)
+
+    if not value:
+        return
+
+    if ctx.obj is None:
+        ctx.obj = {"verbosity": 0}
+    elif not isinstance(ctx.obj, dict):
+        INVALID_CONTEXT_TYPE_MESSAGE: Final[str] = f"Invalid 'ctx.obj' type: {type(ctx.obj)}."
+        raise TypeError(INVALID_CONTEXT_TYPE_MESSAGE)
+
+    if ctx.obj.get("verbosity", 0) > 1:
+        raise click.BadOptionUsage(
+            option_name="quiet",
+            message="cannot use option '--quiet' in addition to '--verbose'.",
+            ctx=ctx,
+        )
+
+    ctx.obj["verbosity"] = -1
+
+    utils.setup_logging(-1)
+
+
+def _callback_validate_with_git(
+    ctx: click.Context, _param: click.Parameter, value: object
+) -> bool:
+    if not isinstance(value, bool):
+        INVALID_OPTION_TYPE_MESSAGE: Final[str] = (
+            f"Expected bool, got {type(value)} for 'with-git' value."
+        )
+        raise TypeError(INVALID_OPTION_TYPE_MESSAGE)
+
+    if importlib.util.find_spec("git") is None and value:
+        raise click.BadOptionUsage(
+            option_name="with-git",
+            message="Cannot use '--with-git' when the [git-python] extra is not installed.",
+            ctx=ctx,
+        )
+
+    return value
+
+
+def _callback_validate_exclude_hidden(
+    ctx: click.Context, _param: click.Parameter, value: object
+) -> bool:
+    WITH_GIT: Final[object] = ctx.params["with_git"]
+    if not isinstance(WITH_GIT, bool):
+        raise TypeError
+
+    if value is None:
+        return not WITH_GIT
+
+    if not isinstance(value, bool):
+        INVALID_OPTION_TYPE_MESSAGE: Final[str] = (
+            f"Expected bool, got {type(value)} for 'exclude-hidden' value."
+        )
+        raise TypeError(INVALID_OPTION_TYPE_MESSAGE)
+
+    if WITH_GIT and value:
+        raise click.BadOptionUsage(
+            option_name="with-git",
+            message="Cannot use '--exclude-hidden' if using '--with-git'.",
+            ctx=ctx,
+        )
+
+    if not WITH_GIT and not value:
+        click.confirm(
+            text=(
+                "Scanning all files without git "
+                "and without using manual hidden-file exclusion rules "
+                f"can lead to cleaning many additional files{
+                    " (For example files within the .venv/ directory)"
+                    if PROJECT_ROOT.joinpath(".venv").is_dir() else ""
+                }. Are you sure you wish to continue scanning all files?"
+            ),
+            abort=True,
+            err=False,
+        )
+
+    return value
+
+
+def _callback_dry_run(_ctx: click.Context, _param: click.Parameter, value: object) -> bool:
+    if not isinstance(value, bool):
+        INVALID_OPTION_TYPE_MESSAGE: Final[str] = (
+            f"Expected bool, got {type(value)} for 'dry-run' value."
+        )
+        raise TypeError(INVALID_OPTION_TYPE_MESSAGE)
+
+    if value:
+        logger.info(
+            "Running in dry-run mode; "
+            "although log messages will be sent about editing/deleting files, "
+            "the filesystem will not be affected"
+        )
+
+    return value
+
+
+@click.group(
+    context_settings={"help_option_names": ["-h", "--help"]},
+    help=f"{
+        (
+            importlib.metadata.metadata("CCFT-PyMarkdown").get("Summary") or "CCFT-PyMarkdown"
+        ).strip(".")
+    }.",
+)
+@click.option(
+    "-v",
+    "--verbose",
+    count=True,
+    callback=_callback_verbose,
+    expose_value=False,
+)
+@click.option(
+    "-q",
+    "--quiet",
+    is_flag=True,
+    callback=_callback_mutually_exclusive_verbose_and_quiet,
+    expose_value=False,
+)
+def run() -> None:
+    """Run cli entry-point."""
+
+
+@run.command(name="clean", help="Clean custom-formatted tables from all Markdown files.")
+@click.argument(
+    "files",
+    nargs=-1,
+    type=click.Path(exists=True, file_okay=True, dir_okay=True, path_type=Path),
+)
+@click.option(
+    "--with-git/--no-git",
+    "--use-git/--without-git",
+    is_flag=True,
+    default=(importlib.util.find_spec("git") is not None),
+    show_default=True,
+    help=(
+        "Whether to use local repository information (including `.gitignore` file) "
+        "to identify which files to clean when recursing directories. "
+        "Note: '--with-git' is not available when the [git-python] extra is not installed."
+    ),
+    is_eager=True,
+    callback=_callback_validate_with_git,
+)
+@click.option(
+    "--exclude-hidden/--no-exclude-hidden",
+    is_flag=True,
+    default=None,
+    help=(
+        "Use manual exclusion rules to filter out any hidden files "
+        "when recursing directories. "
+        "Note: these rules are unstable and it is recommended to instead "
+        "install the [git-python] extra with a complete repository and `.gitignore` file. "
+        "[default: exclude-hidden if using '--no-git', otherwise no-exclude-hidden]"
+    ),
+    callback=_callback_validate_exclude_hidden,
+)
+@click.option("--dry-run/--no-dry-run", "-d/", default=False, callback=_callback_dry_run)
+@click.pass_context
+def _clean(
+    ctx: click.Context,
+    files: "Sequence[Path]",
+    *,
+    with_git: bool,
+    exclude_hidden: bool,
+    dry_run: bool,
+) -> None:
+    import inflect
+
+    INFLECT_ENGINE: Final[inflect.engine] = inflect.engine()
+
+    file_exclusion_method: FileExclusionMethod = FileExclusionMethod.from_flags(
+        with_git=with_git, exclude_hidden=exclude_hidden
+    )
+
+    if not files:
+        logger.debug("No files explicitly selected, recursing from current working directory")
+
     clean_tables_file_exists_error: FileExistsError
     try:
-        clean_custom_formatted_tables.clean_custom_formatted_tables_from_all_files()
+        cleaned_files: AbstractSet[Path] = clean(
+            files
+            if files
+            else utils.get_markdown_files(file_exclusion_method=file_exclusion_method),
+            file_exclusion_method,
+            dry_run=dry_run,
+        )
 
     except FileExistsError as clean_tables_file_exists_error:
-        MANUAL_CLEAN_ERROR_IS_ORIGINAL_FILE_ALREADY_EXISTS: Final[bool] = (
-            bool(clean_tables_file_exists_error.args)
-            and "already exists" in clean_tables_file_exists_error.args[0]
+        logger.error(str(clean_tables_file_exists_error).strip("\n\r\t -."))  # noqa: TRY400
+        logger.info(
+            "Use `%s restore` to first restore the files to their original state",
+            ctx.parent.info_name if ctx.parent is not None else ctx.info_name,
         )
-        if MANUAL_CLEAN_ERROR_IS_ORIGINAL_FILE_ALREADY_EXISTS:
-            MANUAL_CLEAN_TABLES_FILE_EXISTS_ERROR_MESSAGE: Final[str] = (
-                f"{clean_tables_file_exists_error.args[0]} "
-                f"Use `{arg_parser.prog} restore` to first restore the files "
-                "to their original state."
-            )
-            raise type(clean_tables_file_exists_error)(
-                MANUAL_CLEAN_TABLES_FILE_EXISTS_ERROR_MESSAGE
-            ) from clean_tables_file_exists_error
+        return
 
-        raise clean_tables_file_exists_error from clean_tables_file_exists_error
-
-    return 0
-
-
-def _run_restore() -> int:
-    restore_files.restore_all_markdown_files()
-    return 0
+    logger.info(
+        "No files required cleaning"
+        if len(cleaned_files) == 0
+        else (
+            f"Running without '--dry-run' would have cleaned the following {
+                INFLECT_ENGINE.plural_noun("file", len(cleaned_files))
+            }: {
+                ", ".join(f"'{file_path}'" for file_path in cleaned_files)
+            }"
+        )
+        if dry_run
+        else f"Successfully cleaned {INFLECT_ENGINE.no("file", len(cleaned_files))}",
+    )
 
 
-def _run_scan_all(arg_parser: ArgumentParser) -> int:
+@run.command(name="restore", help="Restore custom-formatted tables from all Markdown files.")
+@click.option("--dry-run/--no-dry-run", "-d/", default=False, callback=_callback_dry_run)
+def _restore(*, dry_run: bool) -> None:
+    import inflect
+
+    INFLECT_ENGINE: Final[inflect.engine] = inflect.engine()
+
+    restored_files: AbstractSet[Path] = restore(utils.get_original_files(), dry_run=dry_run)
+
+    logger.info(
+        "No files required restoring"
+        if len(restored_files) == 0
+        else (
+            f"Running without '--dry-run' would have restored the following {
+                INFLECT_ENGINE.plural_noun("file", len(restored_files))
+            }: {
+                ", ".join(f"'{file_path}'" for file_path in restored_files)
+            }"
+        )
+        if dry_run
+        else f"Successfully restored {INFLECT_ENGINE.no("file", len(restored_files))}",
+    )
+
+
+@run.command(
+    name="scan-all", help="Lint all Markdown files after removing custom-formatted tables."
+)
+@click.option(
+    "--with-git/--no-git",
+    "--use-git/--without-git",
+    is_flag=True,
+    default=(importlib.util.find_spec("git") is not None),
+    show_default=True,
+    help=(
+        "Whether to use local repository information (including `.gitignore` file) "
+        "to identify which files to clean when recursing directories. "
+        "Note: '--with-git' is not available when the [git-python] extra is not installed."
+    ),
+    is_eager=True,
+    callback=_callback_validate_with_git,
+)
+@click.option(
+    "--exclude-hidden/--no-exclude-hidden",
+    is_flag=True,
+    default=None,
+    help=(
+        "Use manual exclusion rules to filter out any hidden files "
+        "when recursing directories. "
+        "Note: these rules are unstable and it is recommended to instead "
+        "install the [git-python] extra with a complete repository and `.gitignore` file. "
+        " [default: exclude-hidden if using '--no-git', otherwise no-exclude-hidden]"
+    ),
+    callback=_callback_validate_exclude_hidden,
+)
+@click.pass_context
+def _scan_all(ctx: click.Context, *, with_git: bool, exclude_hidden: bool) -> None:
     clean_tables_file_exists_error: FileExistsError
     try:
-        with CleanCustomFormattedTables():
-            parser_output: CompletedProcess[bytes] = subprocess.run(
-                [
-                    sys.executable,
-                    "-m",
-                    "pymarkdown",
-                    "--return-code-scheme",
-                    "minimal",
-                    "scan",
-                    utils.PROJECT_ROOT.resolve(),
-                ],
-                check=True,
+        with CleanCustomFormattedTables(
+            file_exclusion_method=FileExclusionMethod.from_flags(
+                with_git=with_git, exclude_hidden=exclude_hidden
             )
+        ) as custom_formatted_tables_cleaner:
+            if not custom_formatted_tables_cleaner.cleaned_files:
+                logger.info("No files to lint")
+            else:
+                subprocess.run(
+                    [
+                        sys.executable,
+                        "-m",
+                        "pymarkdown",
+                        "--return-code-scheme",
+                        "minimal",
+                        "scan",
+                        *(
+                            str(file_path)
+                            for file_path in custom_formatted_tables_cleaner.cleaned_files
+                        ),
+                    ],
+                    check=True,
+                )
 
     except FileExistsError as clean_tables_file_exists_error:
-        WITH_PYMARKDOWN_ERROR_IS_ORIGINAL_FILE_ALREADY_EXISTS: Final[bool] = (
-            bool(clean_tables_file_exists_error.args)
-            and "already exists" in clean_tables_file_exists_error.args[0]
+        logger.error(str(clean_tables_file_exists_error).strip("\n\r\t -."))  # noqa: TRY400
+        logger.info(
+            "Use `%s restore` to first restore the files to their original state",
+            ctx.parent.info_name if ctx.parent is not None else ctx.info_name,
         )
-        if WITH_PYMARKDOWN_ERROR_IS_ORIGINAL_FILE_ALREADY_EXISTS:
-            WITH_PYMARKDOWN_CLEAN_TABLES_FILE_EXISTS_ERROR_MESSAGE: Final[str] = (
-                f"{clean_tables_file_exists_error.args[0]} "
-                f"Use `{arg_parser.prog} restore` to first restore the files "
-                "to their original state."
-            )
-            raise type(clean_tables_file_exists_error)(
-                WITH_PYMARKDOWN_CLEAN_TABLES_FILE_EXISTS_ERROR_MESSAGE
-            ) from clean_tables_file_exists_error
-
-        raise clean_tables_file_exists_error from clean_tables_file_exists_error
-
-    return parser_output.returncode
-
-
-def _set_up_arg_parser() -> ArgumentParser:
-    arg_parser: ArgumentParser = ArgumentParser(
-        prog="ccft-pymarkdown",
-        description="Lint Markdown files after removing custom-formatted tables.",
-    )
-
-    action_sub_parser_group: SubParserGroup = arg_parser.add_subparsers(
-        title="action",
-        required=True,
-        dest="action",
-    )
-
-    clean_action_sub_parser: ArgumentParser = action_sub_parser_group.add_parser(
-        "clean",
-        help="Manually clean custom-formatted tables from all Markdown files.",
-    )
-    clean_action_sub_parser.set_defaults(
-        run_func=functools.partial(_run_clean, arg_parser=arg_parser),
-    )
-
-    restore_action_sub_parser: ArgumentParser = action_sub_parser_group.add_parser(
-        "restore",
-        help="Manually restore custom formatted tables from all Markdown files.",
-    )
-    restore_action_sub_parser.set_defaults(run_func=_run_restore)
-
-    scan_all_action_sub_parser: ArgumentParser = action_sub_parser_group.add_parser(
-        "scan-all",
-        help="Lint all Markdown files after removing custom-formatted tables.",
-    )
-    scan_all_action_sub_parser.set_defaults(
-        run_func=functools.partial(_run_scan_all, arg_parser=arg_parser),
-    )
-
-    return arg_parser
-
-
-def run(argv: "Sequence[str] | None" = None) -> int:
-    """Run CCFT-PyMarkdown."""
-    arg_parser: ArgumentParser = _set_up_arg_parser()
-
-    parsed_args: Namespace = arg_parser.parse_args(argv)
-
-    return_value: object = parsed_args.run_func()
-    if not isinstance(return_value, int):
-        INVALID_ACTION_RETURN_TYPE: Final[str] = (
-            f"Action {parsed_args.action}'s run_func did not return an integer."
-        )
-        raise TypeError(INVALID_ACTION_RETURN_TYPE)
-
-    return return_value
+        return

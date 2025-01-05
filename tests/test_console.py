@@ -1,14 +1,18 @@
 """Automated test suite for argument parsing within `console.py`."""
 
+import importlib.metadata
+import re
 from typing import TYPE_CHECKING, Final
+
+from click.testing import CliRunner
 
 from ccft_pymarkdown import console
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
+    from collections.abc import Iterable, Sequence
     from typing import Final
 
-    from _pytest.capture import CaptureFixture, CaptureResult
+    from click.testing import Result as ClickResult
 
 __all__: "Sequence[str]" = ()
 
@@ -16,22 +20,42 @@ __all__: "Sequence[str]" = ()
 class TestConsoleRun:
     """Test case to unit-test the `run` function."""
 
-    USAGE_MESSAGE: "Final[str]" = "usage: ccft-pymarkdown [-h] {clean,restore,scan-all}"
+    PARTIAL_USAGE_MESSAGES: "Final[Iterable[str]]" = (
+        "Usage: ",
+        " [OPTIONS] COMMAND [ARGS]...",
+    )
 
-    def test_error_when_no_args(self, capsys: "CaptureFixture[str]") -> None:
-        EXPECTED_ERROR_MESSAGE: Final[str] = (
-            "error: the following arguments are required: action"
+    def test_help_when_no_args(self) -> None:
+        PARTIAL_EXPECTED_HELP_MESSAGES: Final[Iterable[str]] = (
+            "Show this message and exit.",
+            "Options:",
+            "Commands:",
+        )
+        RUNNER: CliRunner = CliRunner()
+
+        result: ClickResult = RUNNER.invoke(console.run, ())
+
+        assert result.exit_code == 0
+        assert all(
+            partial_usage_message in re.sub(r"\s+|\n", " ", result.output)
+            for partial_usage_message in self.PARTIAL_USAGE_MESSAGES
+        )
+        assert all(
+            partial_expected_help_message in re.sub(r"\s+|\n", " ", result.output)
+            for partial_expected_help_message in PARTIAL_EXPECTED_HELP_MESSAGES
         )
 
-        e: SystemExit
-        try:
-            return_code: int = console.run([])
-        except SystemExit as e:
-            return_code = 0 if not e.code else int(e.code)
+    def test_package_description_in_help(self) -> None:
+        package_description: str | None = importlib.metadata.metadata("CCFT-PyMarkdown").get(
+            "Summary"
+        )
 
-        capture_result: CaptureResult[str] = capsys.readouterr()
+        if package_description is None:
+            return
 
-        assert return_code != 0
-        assert not capture_result.out
-        assert self.USAGE_MESSAGE in capture_result.err
-        assert EXPECTED_ERROR_MESSAGE in capture_result.err
+        RUNNER: CliRunner = CliRunner()
+
+        result: ClickResult = RUNNER.invoke(console.run, ("--help",))
+
+        assert result.exit_code == 0
+        assert f"{package_description.strip(".")}." in re.sub(r"\s+|\n", " ", result.output)
