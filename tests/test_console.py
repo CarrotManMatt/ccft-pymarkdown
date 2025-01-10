@@ -58,4 +58,4 @@ class TestConsoleRun:
         result: ClickResult = RUNNER.invoke(console.run, ("--help",))
 
         assert result.exit_code == 0
-        assert f"{package_description.strip(".")}." in re.sub(r"\s+|\n", " ", result.output)
+        assert f"{package_description.strip('.')}." in re.sub(r"\s+|\n", " ", result.output)
