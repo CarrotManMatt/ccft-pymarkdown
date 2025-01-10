@@ -124,8 +124,9 @@ def _callback_validate_exclude_hidden(
                 "Scanning all files without git "
                 "and without using manual hidden-file exclusion rules "
                 f"can lead to cleaning many additional files{
-                    " (For example files within the .venv/ directory)"
-                    if PROJECT_ROOT.joinpath(".venv").is_dir() else ""
+                    ' (For example files within the .venv/ directory)'
+                    if PROJECT_ROOT.joinpath('.venv').is_dir()
+                    else ''
                 }. Are you sure you wish to continue scanning all files?"
             ),
             abort=True,
@@ -156,8 +157,8 @@ def _callback_dry_run(_ctx: click.Context, _param: click.Parameter, value: objec
     context_settings={"help_option_names": ["-h", "--help"]},
     help=f"{
         (
-            importlib.metadata.metadata("CCFT-PyMarkdown").get("Summary") or "CCFT-PyMarkdown"
-        ).strip(".")
+            importlib.metadata.metadata('CCFT-PyMarkdown').get('Summary') or 'CCFT-PyMarkdown'
+        ).strip('.')
     }.",
 )
 @click.option(
@@ -255,13 +256,11 @@ def _clean(
         if len(cleaned_files) == 0
         else (
             f"Running without '--dry-run' would have cleaned the following {
-                INFLECT_ENGINE.plural_noun("file", len(cleaned_files))
-            }: {
-                ", ".join(f"'{file_path}'" for file_path in cleaned_files)
-            }"
+                INFLECT_ENGINE.plural_noun('file', len(cleaned_files))
+            }: {', '.join(f"'{file_path}'" for file_path in cleaned_files)}"
         )
         if dry_run
-        else f"Successfully cleaned {INFLECT_ENGINE.no("file", len(cleaned_files))}",
+        else f"Successfully cleaned {INFLECT_ENGINE.no('file', len(cleaned_files))}",
     )
 
 
@@ -279,13 +278,11 @@ def _restore(*, dry_run: bool) -> None:
         if len(restored_files) == 0
         else (
             f"Running without '--dry-run' would have restored the following {
-                INFLECT_ENGINE.plural_noun("file", len(restored_files))
-            }: {
-                ", ".join(f"'{file_path}'" for file_path in restored_files)
-            }"
+                INFLECT_ENGINE.plural_noun('file', len(restored_files))
+            }: {', '.join(f"'{file_path}'" for file_path in restored_files)}"
         )
         if dry_run
-        else f"Successfully restored {INFLECT_ENGINE.no("file", len(restored_files))}",
+        else f"Successfully restored {INFLECT_ENGINE.no('file', len(restored_files))}",
     )
 
 
