@@ -44,8 +44,8 @@ requires-python = ">=3.12"
 git-python = ["gitpython>=3.1"]
 
 [project.urls]
-Issues = "https://github.com/CarrotManMatt/ccft-pymarkdown/issues"
-Repository = "https://github.com/CarrotManMatt/ccft-pymarkdown"
+Issues = "https://github.com/CarrotManMatt/CCFT-PyMarkdown/issues"
+Repository = "https://github.com/CarrotManMatt/CCFT-PyMarkdown"
 
 [project.scripts]
 ccft-pymarkdown = "ccft_pymarkdown.console:run"

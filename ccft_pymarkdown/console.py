@@ -25,7 +25,7 @@ if TYPE_CHECKING:
 
 __all__: "Sequence[str]" = ("run",)
 
-logger: "Final[Logger]" = logging.getLogger("ccft-pymarkdown")
+logger: "Final[Logger]" = logging.getLogger("ccft_pymarkdown")
 
 
 def _callback_verbose(ctx: click.Context, _param: click.Parameter, value: object) -> None:

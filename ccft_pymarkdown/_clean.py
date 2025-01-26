@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 
 __all__: "Sequence[str]" = ("clean",)
 
-logger: "Final[Logger]" = logging.getLogger("ccft-pymarkdown")
+logger: "Final[Logger]" = logging.getLogger("ccft_pymarkdown")
 
 
 if TYPE_CHECKING:

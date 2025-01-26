@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 __all__: "Sequence[str]" = ("restore",)
 
-logger: "Final[Logger]" = logging.getLogger("ccft-pymarkdown")
+logger: "Final[Logger]" = logging.getLogger("ccft_pymarkdown")
 
 
 def _check_file(file_path: "Path") -> "Literal[True]":

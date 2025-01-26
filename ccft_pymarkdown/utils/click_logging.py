@@ -19,7 +19,7 @@ __all__: "Sequence[str]" = (
 )
 
 
-logger: "Final[Logger]" = logging.getLogger("ccft-pymarkdown")
+logger: "Final[Logger]" = logging.getLogger("ccft_pymarkdown")
 
 LOGGED_USE_GIT_PYTHON: bool = False
 

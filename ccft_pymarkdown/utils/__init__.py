@@ -30,7 +30,7 @@ if TYPE_CHECKING:
         verbosity: int
 
 
-logger: "Final[Logger]" = logging.getLogger("ccft-pymarkdown")
+logger: "Final[Logger]" = logging.getLogger("ccft_pymarkdown")
 logger.disabled = True
 
 CONVERSION_FILE_SUFFIX: "Final[str]" = ".ccft-original"
