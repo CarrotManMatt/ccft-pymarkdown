@@ -127,8 +127,7 @@ ccft-pymarkdown --version
 
 === Scanning All Files After Cleaning Custom-Formatted Tables
 
-To perform linting using {labelled-url-pymarkdown}, after cleaning custom-formatted tables within any {labelled-url-wiki-markdown} files, use the `+scan-all+` action:
-
+.To perform linting using {labelled-url-pymarkdown}, after cleaning custom-formatted tables within any {labelled-url-wiki-markdown} files, use the `+scan-all+` action
 [source,bash]
 ccft-pymarkdown scan-all
 
@@ -143,8 +142,7 @@ ccft-pymarkdown scan-all --no-git
 [#manually-cleaning-custom-formatted-tables]
 === Manually Cleaning Custom-Formatted Tables
 
-To manually clean custom-formatted-tables within any {labelled-url-wiki-markdown} files without running {labelled-url-pymarkdown}, use the `+clean+` action:
-
+.To manually clean custom-formatted-tables within any {labelled-url-wiki-markdown} files without running {labelled-url-pymarkdown}, use the `+clean+` action
 [source,bash]
 ccft-pymarkdown clean MyNotes.md MyReport.md
 
@@ -167,8 +165,7 @@ ccft-pymarkdown clean --dry-run MyNotes.md MyReport.md
 [#manually-restoring-custom-formatted-tables]
 === Manually Restoring {labelled-url-wiki-markdown} Files
 
-To manually restore any {labelled-url-wiki-markdown} files without running {labelled-url-pymarkdown}, use the `+restore+` action:
-
+.To manually restore any {labelled-url-wiki-markdown} files without running {labelled-url-pymarkdown}, use the `+restore+` action
 [source,bash]
 ccft-pymarkdown restore MyNotes.md MyReport.md
 
