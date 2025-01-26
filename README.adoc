@@ -76,11 +76,11 @@ uvx -- ccft-pymarkdown --help
 
 .{url-uv-wiki-tools-installing}[Install permenantly as a uv tool]
 [source,bash]
-uv tool install CCFT-Pymarkdown
+uv tool install CCFT-PyMarkdown
 
 .Install using {labelled-url-pip} after {url-python-wiki-virtual-environments}[creating a virtual environment]
 [source,bash]
-path/to/venv/python -m pip install CCFT-Pymarkdown
+path/to/venv/python -m pip install CCFT-PyMarkdown
 
 === The `+[git-python]+` {url-python-packaging-wiki-dependency-extras}[Extra]
 
@@ -89,21 +89,21 @@ This will allow the identification of hidden/excluded files to make use of your 
 
 .Run as a {url-uv-wiki-tools}[uv tool] (no installation necessary)
 [source,bash]
-uvx --from CCFT-Pymarkdown[git-python] -- ccft-pymarkdown --help
+uvx --from CCFT-PyMarkdown[git-python] -- ccft-pymarkdown --help
 
 .{url-uv-wiki-tools-installing}[Install permenantly as a uv tool]
 [source,bash]
-uv tool install CCFT-Pymarkdown[git-python]
+uv tool install CCFT-PyMarkdown[git-python]
 
 .Install using {labelled-url-pip} after {url-python-wiki-virtual-environments}[creating a virtual environment]
 [source,bash]
-path/to/venv/python -m pip install CCFT-Pymarkdown[git-python]
+path/to/venv/python -m pip install CCFT-PyMarkdown[git-python]
 
 == Usage
 
 [WARNING]
 --
-These commands will only work correctly either after installation as a {url-uv-wiki-tools-installing}[permenant uv tool], or after activating a virtual environment with CCFT-Pymarkdown installed.
+These commands will only work correctly either after installation as a {url-uv-wiki-tools-installing}[permenant uv tool], or after activating a virtual environment with CCFT-PyMarkdown installed.
 Replace the command name `+ccft-pymarkdown+` with `+uvx -- ccft-pymarkdown+`, to run any of the following commands in an ephemeral envrionment.
 --
 

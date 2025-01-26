@@ -1,0 +1,27 @@
+name: Publish PyPI Redirects
+
+on:
+    workflow_dispatch:
+
+jobs:
+    CCFT-PyMarkdownlnt-redirect:
+        runs-on: ubuntu-latest
+        environment: redirect-publish-CCFT-PyMarkdownlnt
+        permissions:
+            id-token: write
+
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                fetch-depth: 0
+
+            - name: Install uv
+              uses: astral-sh/setup-uv@v5
+
+            - name: Build Package
+              working-directory: ./.pypi-redirects/CCFT-PyMarkdownlnt
+              run: uv build --sdist
+
+            - name: Publish to PyPI
+              working-directory: ./.pypi-redirects/CCFT-PyMarkdownlnt
+              run: uv publish
