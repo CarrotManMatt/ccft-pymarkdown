@@ -6,7 +6,7 @@ on:
 jobs:
     CCFT-PyMarkdownlnt-redirect:
         runs-on: ubuntu-latest
-        environment: redirect-publish-CCFT-PyMarkdownlnt
+        environment: redirect-publish-ccft-pymarkdownlnt
         permissions:
             id-token: write
 
