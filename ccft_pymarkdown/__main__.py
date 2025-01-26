@@ -2,7 +2,7 @@
 
 from typing import TYPE_CHECKING
 
-from ccft_pymarkdown import console
+from . import console
 
 if TYPE_CHECKING:
     from collections.abc import Sequence

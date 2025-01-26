@@ -11,9 +11,9 @@ from typing import TYPE_CHECKING
 import click
 
 from . import utils
-from .clean import clean
+from ._clean import clean
+from ._restore import restore
 from .context_manager import CleanCustomFormattedTables
-from .restore import restore
 from .utils import PROJECT_ROOT, FileExclusionMethod
 
 if TYPE_CHECKING:
@@ -161,6 +161,7 @@ def _callback_dry_run(_ctx: click.Context, _param: click.Parameter, value: objec
         ).strip('.')
     }.",
 )
+@click.version_option(None, "-V", "--version")
 @click.option(
     "-v",
     "--verbose",
@@ -180,6 +181,7 @@ def run() -> None:
 
 
 @run.command(name="clean", help="Clean custom-formatted tables from all Markdown files.")
+@click.version_option(None, "-V", "--version")
 @click.argument(
     "files",
     nargs=-1,
@@ -265,6 +267,7 @@ def _clean(
 
 
 @run.command(name="restore", help="Restore custom-formatted tables from all Markdown files.")
+@click.version_option(None, "-V", "--version")
 @click.option("--dry-run/--no-dry-run", "-d/", default=False, callback=_callback_dry_run)
 def _restore(*, dry_run: bool) -> None:
     import inflect
@@ -289,6 +292,7 @@ def _restore(*, dry_run: bool) -> None:
 @run.command(
     name="scan-all", help="Lint all Markdown files after removing custom-formatted tables."
 )
+@click.version_option(None, "-V", "--version")
 @click.option(
     "--with-git/--no-git",
     "--use-git/--without-git",

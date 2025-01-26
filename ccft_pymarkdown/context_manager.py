@@ -3,8 +3,8 @@
 from typing import TYPE_CHECKING
 
 from . import utils
-from .clean import clean
-from .restore import restore
+from ._clean import clean
+from ._restore import restore
 from .utils import CONVERSION_FILE_SUFFIX, FileExclusionMethod
 
 if TYPE_CHECKING:

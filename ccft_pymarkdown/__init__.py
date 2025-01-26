@@ -2,10 +2,10 @@
 
 from typing import TYPE_CHECKING
 
-from .clean import clean
+from ._clean import clean
+from ._restore import restore
 from .console import run
 from .context_manager import CleanCustomFormattedTables
-from .restore import restore
 
 if TYPE_CHECKING:
     from collections.abc import Sequence

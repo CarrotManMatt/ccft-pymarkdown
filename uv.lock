@@ -25,7 +25,7 @@ dependencies = [
 ]
 
 [package.optional-dependencies]
-gitpython = [
+git-python = [
     { name = "gitpython" },
 ]
 
@@ -56,7 +56,7 @@ type-check = [
 [package.metadata]
 requires-dist = [
     { name = "click", specifier = ">=8.1" },
-    { name = "gitpython", marker = "extra == 'gitpython'", specifier = ">=3.1" },
+    { name = "gitpython", marker = "extra == 'git-python'", specifier = ">=3.1" },
     { name = "inflect", specifier = ">=7.5" },
     { name = "pymarkdownlnt", specifier = ">=0.9" },
 ]

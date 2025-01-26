@@ -41,7 +41,7 @@ name = "CCFT-PyMarkdown"
 requires-python = ">=3.12"
 
 [project.optional-dependencies]
-gitpython = ["gitpython>=3.1"]
+git-python = ["gitpython>=3.1"]
 
 [project.urls]
 Issues = "https://github.com/CarrotManMatt/ccft-pymarkdown/issues"
