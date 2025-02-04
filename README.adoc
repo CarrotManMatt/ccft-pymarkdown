@@ -55,7 +55,7 @@ v2.1, 26/01/2025
 image:https://img.shields.io/badge/%F0%9F%A5%95-CCFT--PyMarkdown-blue[CCFT-PyMarkdown,link={url-project-repository}]
 image:https://img.shields.io/pypi/v/CCFT-PyMarkdown[PyPI Version,link={url-project-pypi}]
 image:https://img.shields.io/pypi/pyversions/CCFT-PyMarkdown?logo=Python&logoColor=white&label=Python[Python Version,link={url-python-download}]
-image:https://img.shields.io/endpoint?url=https://toml-version-extractor.carrotmanmatt.com/lock/CarrotManMatt/CCFT-PyMarkdown&logo=Markdown&label=PyMarkdown[PyMarkdown Version,link={url-pymarkdown}]
+image:https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ftoml-version-finder.carrotmanmatt.com%2Flock%2FCarrotManMatt%2FCCFT-PyMarkdown%2Fpymarkdownlnt&query=%24.package_version&logo=Markdown&label=PyMarkdown[PyMarkdown Version,link={url-pymarkdown}]
 image:{url-project-repository}/actions/workflows/check-build-publish.yaml/badge.svg[Tests Status,link={url-project-repository}/actions/workflows/check-build-publish.yaml]
 image:https://img.shields.io/badge/mypy-checked-%232EBB4E&label=mypy[mypy Status,link={url-mypy}]
 image:https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json[Ruff,link={url-ruff}]
