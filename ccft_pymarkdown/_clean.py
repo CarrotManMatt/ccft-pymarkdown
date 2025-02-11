@@ -108,7 +108,6 @@ def clean(
             )
             continue
 
-        e: Exception
         try:
             _check_file(file_path)
         except (FileNotFoundError, FileExistsError, OSError) as e:
