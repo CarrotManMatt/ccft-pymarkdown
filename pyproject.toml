@@ -146,6 +146,7 @@ parametrize-values-type = "tuple"
 banned-module-level-imports = ["inflect"]
 
 [tool.ruff.lint.flake8-type-checking]
+exempt-modules = []
 quote-annotations = true
 strict = true
 
