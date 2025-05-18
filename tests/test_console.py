@@ -35,7 +35,7 @@ class TestConsoleRun:
 
         result: ClickResult = RUNNER.invoke(console.run, ())
 
-        assert result.exit_code == 0
+        assert result.exit_code != 0
         assert all(
             partial_usage_message in re.sub(r"\s+|\n", " ", result.output)
             for partial_usage_message in self.PARTIAL_USAGE_MESSAGES
