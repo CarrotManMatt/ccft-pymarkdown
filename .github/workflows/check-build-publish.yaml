@@ -290,7 +290,7 @@ jobs:
                 path: dist/
 
             - name: Sign Build Artifacts
-              uses: sigstore/gh-action-sigstore-python@v3.0.0
+              uses: sigstore/gh-action-sigstore-python@v3.0.1
               with:
                 inputs: ./dist/ccft_pymarkdown-*.tar.gz ./dist/ccft_pymarkdown-*.whl
 
