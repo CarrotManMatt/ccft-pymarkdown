@@ -61,7 +61,7 @@ class FileExclusionMethod(Enum):
 
 def _get_project_root() -> "Path":
     try:
-        from git import InvalidGitRepositoryError, Repo
+        from git import InvalidGitRepositoryError, Repo  # noqa: PLC0415
     except ImportError:
         logger.warning("GitPython is not installed, falling back to naive file exploration")
         return _get_readme_root()
@@ -149,7 +149,7 @@ def get_markdown_files(
         )
 
     try:
-        from git import InvalidGitRepositoryError, Repo
+        from git import InvalidGitRepositoryError, Repo  # noqa: PLC0415
     except ImportError:
         logger.warning(
             (
