@@ -2,6 +2,7 @@
 
 import logging
 import shutil
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 from . import utils
@@ -11,7 +12,6 @@ if TYPE_CHECKING:
     from collections.abc import Iterable, Sequence
     from collections.abc import Set as AbstractSet
     from logging import Logger
-    from pathlib import Path
     from typing import Final, Literal, TextIO
 
 
@@ -20,22 +20,19 @@ __all__: "Sequence[str]" = ("clean",)
 logger: "Final[Logger]" = logging.getLogger("ccft_pymarkdown")
 
 
-if TYPE_CHECKING:
-
-    class CopiedPath(Path): ...
-
-
-def _copy_file(original_file_path: "Path") -> tuple["CopiedPath", "Path"]:
-    copied_path: CopiedPath = shutil.copy2(
-        original_file_path,
-        original_file_path.parent / f"{original_file_path.name}{CONVERSION_FILE_SUFFIX}",
+def _copy_file(original_file_path: "Path") -> tuple["Path", "Path"]:
+    copied_path: Path = Path(
+        shutil.copy2(
+            original_file_path,
+            original_file_path.parent / f"{original_file_path.name}{CONVERSION_FILE_SUFFIX}",
+        )
     )
     return copied_path, original_file_path
 
 
 def _clean_single_file(original_file_path: "Path") -> None:
     """Clean custom-formatted tables within a Markdown file at a given path."""
-    new_file_path: CopiedPath
+    new_file_path: Path
     new_file_path, original_file_path = _copy_file(original_file_path)
 
     original_file: TextIO

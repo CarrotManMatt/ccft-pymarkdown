@@ -1,6 +1,6 @@
 [build-system]
 build-backend = "hatchling.build"
-requires = ["Pydowndoc", "hatch-vcs", "hatchling"]
+requires = ["Pydowndoc[bin]", "hatch-vcs", "hatchling"]
 
 [dependency-groups]
 dev = [

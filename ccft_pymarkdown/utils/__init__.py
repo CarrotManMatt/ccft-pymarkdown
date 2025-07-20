@@ -11,7 +11,7 @@ from .click_logging import setup_logging
 if TYPE_CHECKING:
     from collections.abc import Iterable, Sequence
     from logging import Logger
-    from typing import Final, TypedDict
+    from typing import Final
 
     from git import PathLike
 
@@ -23,11 +23,6 @@ __all__: "Sequence[str]" = (
     "get_all_original_files",
     "setup_logging",
 )
-
-if TYPE_CHECKING:
-
-    class CCFTContextObj(TypedDict, total=False):
-        verbosity: int
 
 
 logger: "Final[Logger]" = logging.getLogger("ccft_pymarkdown")
