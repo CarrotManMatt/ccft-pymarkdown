@@ -134,7 +134,7 @@ ccft-pymarkdown --version
 [source,bash]
 ccft-pymarkdown scan-all
 
-.Scan files according to your `+.gitignore+` file (Not available when the `+[git-python]+` extra is not installed)
+.Scan files according to your `+.gitignore+` file (Only available when the `+[git-python]+` extra is installed)
 [source,bash]
 ccft-pymarkdown scan-all --with-git
 
@@ -153,7 +153,7 @@ ccft-pymarkdown clean MyNotes.md MyReport.md
 [source,bash]
 ccft-pymarkdown clean my-notes/ MyReport.md
 
-.Clean a whole directory according to your .gitignore file (Not available when the [git-python] extra is not installed)
+.Clean a whole directory according to your `+.gitignore+` file (Only available when the [git-python] extra is installed)
 [source,bash]
 ccft-pymarkdown clean --with-git my-notes/
 
