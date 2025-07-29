@@ -153,7 +153,7 @@ ccft-pymarkdown clean MyNotes.md MyReport.md
 [source,bash]
 ccft-pymarkdown clean my-notes/ MyReport.md
 
-.Clean a whole directory according to your `+.gitignore+` file (Only available when the [git-python] extra is installed)
+.Clean a whole directory according to your `+.gitignore+` file (Only available when the `+[git-python]+` extra is installed)
 [source,bash]
 ccft-pymarkdown clean --with-git my-notes/
 
@@ -168,7 +168,7 @@ ccft-pymarkdown clean --dry-run MyNotes.md MyReport.md
 [#manually-restoring-custom-formatted-tables]
 === Manually Restoring {labelled-url-wiki-markdown} Files
 
-.To manually restore any {labelled-url-wiki-markdown} files without running {labelled-url-pymarkdown}, use the `+restore+` action
+.To manually restore any cleaned {labelled-url-wiki-markdown} files, use the `+restore+` action
 [source,bash]
 ccft-pymarkdown restore MyNotes.md MyReport.md
 
