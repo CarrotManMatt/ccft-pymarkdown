@@ -341,15 +341,11 @@ def _scan_all(ctx: click.Context, *, with_git: bool, exclude_hidden: bool) -> No
 
             file_path: Path
             for file_path in custom_formatted_tables_cleaner.cleaned_files:
-                try:
-                    scanner.scan_file_path(file_path)
-                except PyMarkdownApiException as pymarkdownlnt_error:
-                    logger.error(str(pymarkdownlnt_error).strip("\n\r\t -."))  # noqa: TRY400
-                    ctx.exit(2)
+                scanner.scan_file_path(file_path)
 
-            scanner.log_errors()
-            if scanner.encountered_failures:
-                ctx.exit(1)
+    except PyMarkdownApiException as pymarkdownlnt_error:
+        logger.error(str(pymarkdownlnt_error).strip("\n\r\t -."))  # noqa: TRY400
+        ctx.exit(2)
 
     except FileExistsError as clean_tables_file_exists_error:
         logger.error(str(clean_tables_file_exists_error).strip("\n\r\t -."))  # noqa: TRY400
@@ -358,3 +354,7 @@ def _scan_all(ctx: click.Context, *, with_git: bool, exclude_hidden: bool) -> No
             ctx.parent.info_name if ctx.parent is not None else ctx.info_name,
         )
         ctx.exit(2)
+
+    scanner.log_errors()
+    if scanner.encountered_failures:
+        ctx.exit(1)

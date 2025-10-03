@@ -37,10 +37,10 @@ def _clean_single_file(original_file_path: "Path") -> None:
 
     original_file: TextIO
     new_file: TextIO
-    with original_file_path.open("r") as original_file, new_file_path.open("w") as new_file:
+    with original_file_path.open("w") as original_file, new_file_path.open("r") as new_file:
         line: str
-        for line in original_file:
-            new_file.write(
+        for line in new_file:
+            original_file.write(
                 line.replace(
                     "<br>* ",
                     "<br> ",
