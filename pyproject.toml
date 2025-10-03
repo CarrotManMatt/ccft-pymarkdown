@@ -17,7 +17,7 @@ type-check = ["mypy>=1.12", { include-group = "test" }]
 [project]
 authors = [{ name = "Matt Norton", email = "matt@carrotmanmatt.com" }]
 classifiers = [
-    "Development Status :: 5 - Production/Stable",
+    "Development Status :: 7 - Inactive",
     "Environment :: Console",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: Apache Software License",
@@ -32,7 +32,7 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = ["click>=8.1", "inflect>=7.5", "pymarkdownlnt>=0.9"]
-description = "A Python wrapper around jackdewinter's PyMarkdown linter to suppress errors, caused by custom-formatted tables in Markdown files"
+description = "ARCHIVED | A Python wrapper around jackdewinter's PyMarkdown linter to suppress errors, caused by custom-formatted tables in Markdown files"
 dynamic = ["readme", "version"]
 keywords = ["linter", "markdown", "static analysis"]
 license = "Apache-2.0"
