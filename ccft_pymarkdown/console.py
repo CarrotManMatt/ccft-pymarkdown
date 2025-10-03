@@ -3,12 +3,11 @@
 import importlib.metadata
 import importlib.util
 import logging
-import subprocess
-import sys
 from pathlib import Path
 from typing import TYPE_CHECKING
 
 import click
+from pymarkdown.main import PyMarkdownLint
 
 from . import utils
 from ._clean import clean
@@ -332,11 +331,8 @@ def _scan_all(ctx: click.Context, *, with_git: bool, exclude_hidden: bool) -> No
             if not custom_formatted_tables_cleaner.cleaned_files:
                 logger.info("No files to lint")
             else:
-                subprocess.run(
+                PyMarkdownLint().main(
                     [
-                        sys.executable,
-                        "-m",
-                        "pymarkdown",
                         "--return-code-scheme",
                         "minimal",
                         "scan",
@@ -344,8 +340,7 @@ def _scan_all(ctx: click.Context, *, with_git: bool, exclude_hidden: bool) -> No
                             str(file_path)
                             for file_path in custom_formatted_tables_cleaner.cleaned_files
                         ),
-                    ],
-                    check=True,
+                    ]
                 )
 
     except FileExistsError as clean_tables_file_exists_error:
